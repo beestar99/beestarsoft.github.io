@@ -142,21 +142,16 @@
         
         .tools-container {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 30px;
+            flex-direction: column; /* 改为垂直排列 */
+            align-items: center; /* 居中对齐 */
+            gap: 40px; /* 增加间距 */
+            max-width: 600px; /* 限制最大宽度 */
+            margin: 0 auto; /* 居中 */
         }
         
         .tool-card {
-            background-color: var(--white);
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            overflow: hidden;
-            width: 100%;
-            max-width: 500px;
-            transition: transform 0.3s ease;
-            display: flex;
-            flex-direction: column;
+            width: 100%; /* 宽度100% */
+            max-width: 500px; /* 保持最大宽度 */
         }
         
         .tool-card:hover {
@@ -164,18 +159,15 @@
         }
         
         .tool-icon {
-            background-color: var(--secondary-blue);
-            color: var(--white);
-            height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background-color: transparent; /* 移除蓝色背景 */
+            height: auto; /* 自动高度 */
+            padding: 20px 0; /* 添加上下内边距 */
         }
         
         .tool-icon img {
             width: 80px;
             height: 80px;
-            object-fit: contain;
+           /* object-fit: contain;*/
         }
         
         .tool-content {
