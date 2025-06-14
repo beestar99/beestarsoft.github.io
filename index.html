@@ -1,404 +1,378 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beestar Software - Useful Little Tools</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <title>BEESTAR SOFTWARE - Useful Little Tools</title>
     <style>
-        :root {
-            --primary-blue: #1a4b8c;
-            --secondary-blue: #2c6bc0;
-            --dark-bg: #222;
-            --light-bg: #f8f9fa;
-            --accent-yellow: #ffc107;
-            --white: #ffffff;
-            --gray: #6c757d;
-            --light-gray: #e9ecef;
-        }
-        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Open Sans', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: var(--light-bg);
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
         }
-        
-        h1, h2, h3, h4, h5 {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* 顶部通栏 */
-        .top-banner {
-            background-color: var(--primary-blue);
-            color: var(--white);
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #4a90e2, #7bb3f0);
+            color: white;
             padding: 15px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .logo-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .logo {
-            width: 60px;
-            height: 60px;
-            margin-right: 15px;
-        }
-        
-        .company-name {
-            font-size: 30px;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-        
-        .subtitle {
             text-align: center;
-            background-color: var(--white);
-            color: #333;
-            padding: 10px 0;
-            font-size: 18px;
-            font-weight: 600;
+            border-bottom: 2px solid #333;
         }
-        
-        /* 导航栏 */
-        .navbar {
-            background-color: var(--dark-bg);
-            color: var(--accent-yellow);
-            padding: 0;
-        }
-        
-        .nav-links {
-            display: flex;
-            list-style: none;
-            justify-content: center;
-        }
-        
-        .nav-links li {
-            padding: 15px 25px;
-            transition: all 0.3s ease;
-        }
-        
-        .nav-links li:hover {
-            background-color: #333;
-        }
-        
-        .nav-links a {
-            color: var(--accent-yellow);
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .nav-links a:hover {
-            color: var(--white);
-        }
-        
-        /* 工具展示区 */
-        .tools-section {
-            padding: 40px 0;
-        }
-        
-        .section-title {
-            text-align: center;
-            margin-bottom: 40px;
-            color: var(--primary-blue);
+
+        .header h1 {
             font-size: 32px;
-            position: relative;
+            font-weight: bold;
+            margin-bottom: 5px;
         }
-        
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background-color: var(--accent-yellow);
+
+        .header .tagline {
+            font-size: 16px;
+            color: #333;
+            background-color: white;
+            margin: 10px auto 0;
+            padding: 5px 15px;
+            display: inline-block;
+            border-radius: 3px;
         }
-        
-        .tools-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 30px;
+
+        /* Navigation */
+        .nav {
+            background-color: #000;
+            padding: 15px 0;
+            text-align: center;
         }
-        
-        .tool-card {
-            background-color: var(--white);
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            overflow: hidden;
-            width: 100%;
-            max-width: 500px;
-            transition: transform 0.3s ease;
-            display: flex;
-            flex-direction: column;
+
+        .nav a {
+            color: #ffa500;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 30px;
+            padding: 10px 20px;
+            transition: background-color 0.3s;
         }
-        
-        .tool-card:hover {
-            transform: translateY(-10px);
+
+        .nav a:hover {
+            background-color: #333;
+            border-radius: 5px;
         }
-        
-        .tool-icon {
-            background-color: var(--secondary-blue);
-            color: var(--white);
-            height: 120px;
+
+        .nav a.active {
+            background-color: #444;
+            border-radius: 5px;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: white;
+            min-height: 500px;
+        }
+
+        /* Tools Display */
+        .tools-section {
+            margin-top: 20px;
+        }
+
+        .tool-item {
             display: flex;
             align-items: center;
-            justify-content: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
         }
-        
-        .tool-icon img {
+
+        .tool-icon {
             width: 80px;
             height: 80px;
+            margin-right: 20px;
             object-fit: contain;
         }
-        
-        .tool-content {
-            padding: 25px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
+
+        .tool-info h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #333;
         }
-        
-        .tool-title {
-            font-size: 24px;
-            margin-bottom: 15px;
-            color: var(--primary-blue);
+
+        .tool-info p {
+            color: #666;
+            margin-bottom: 10px;
         }
-        
-        .tool-description {
-            color: var(--gray);
+
+        .tool-info a {
+            color: #4a90e2;
+            text-decoration: underline;
+        }
+
+        .tool-info a:hover {
+            color: #2171b5;
+        }
+
+        /* Page Content */
+        .page-content {
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .page-content h2 {
+            color: #4a90e2;
             margin-bottom: 20px;
-            min-height: 80px;
+            font-size: 28px;
         }
-        
-        .download-btn {
-            display: inline-block;
-            background-color: var(--primary-blue);
-            color: var(--white);
-            padding: 12px 25px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
-            margin-top: auto;
-            align-self: flex-start;
+
+        .page-content h3 {
+            color: #333;
+            margin: 20px 0 10px 0;
+            font-size: 20px;
         }
-        
-        .download-btn:hover {
-            background-color: var(--secondary-blue);
+
+        .page-content p {
+            margin-bottom: 15px;
         }
-        
-        .download-btn i {
-            margin-left: 8px;
-        }
-        
-        /* 页脚 */
+
+        /* Footer */
         .footer {
-            background-color: var(--dark-bg);
-            color: var(--white);
-            padding: 30px 0 15px;
-        }
-        
-        .footer-content {
+            background-color: #000;
+            color: white;
             text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+        }
+
+        .footer a {
+            color: #ffa500;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Hidden sections for different pages */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Contact Form */
+        .contact-form {
+            max-width: 500px;
+            margin: 20px auto;
+        }
+
+        .form-group {
             margin-bottom: 20px;
         }
-        
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 15px;
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
         }
-        
-        .footer-links a {
-            color: var(--light-gray);
-            text-decoration: none;
-            font-size: 14px;
-            transition: color 0.3s ease;
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
         }
-        
-        .footer-links a:hover {
-            color: var(--accent-yellow);
+
+        .form-group textarea {
+            height: 120px;
+            resize: vertical;
         }
-        
-        .copyright {
+
+        .btn {
+            background-color: #4a90e2;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #2171b5;
+        }
+
+        /* Donate Section */
+        .donate-info {
             text-align: center;
-            font-size: 14px;
-            color: var(--gray);
-            padding-top: 15px;
-            border-top: 1px solid #444;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            margin: 20px 0;
         }
-        
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            .nav-links {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .nav-links li {
-                width: 100%;
-                text-align: center;
-            }
-            
-            .company-name {
-                font-size: 22px;
-            }
-            
-            .section-title {
-                font-size: 28px;
-            }
-            
-            .tools-container {
-                flex-direction: column;
-                align-items: center;
-            }
+
+        .donate-info h3 {
+            color: #4a90e2;
+            margin-bottom: 15px;
         }
     </style>
 </head>
 <body>
-    <!-- 顶部通栏 -->
-    <header>
-        <div class="top-banner">
-            <div class="logo-container">
-                <div class="logo">
-                    <img src="beelogo_120x120.png" alt="Beestar Logo"> 
-                </div>
-                <h1 class="company-name">BEESTAR SOFTWARE</h1>
-            </div>
-        </div>
-        
-        <div class="subtitle">
-            <p>Useful Little Tools</p>
-        </div>
-        
-        <nav class="navbar">
-            <ul class="nav-links">
-                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
-                <li><a href="products.html"><i class="fas fa-box-open"></i> Products</a></li>
-                <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
-                <li><a href="about.html#contact"><i class="fas fa-envelope"></i> Contact</a></li>
-                <li><a href="about.html#donate"><i class="fas fa-donate"></i> Donate</a></li>
-            </ul>
-        </nav>
+    <header class="header">
+        <h1>🐝BEESTAR SOFTWARE</h1>
+        <div class="tagline">Useful Little Tools</div>
     </header>
 
-    <!-- 工具展示区 -->
-    <section class="tools-section">
-        <div class="container">
-            <h2 class="section-title">Our Featured Tools</h2>
-            <div class="tools-container">
-                <!-- 工具1 -->
-                <div class="tool-card">
-                    <div class="tool-icon">
-                        <img src="fraction_256x256.png" alt="Fraction Unit Converter">
+    <nav class="nav">
+        <a href="#" onclick="showPage('products')" class="nav-link active">Products</a>
+        <a href="#" onclick="showPage('about')" class="nav-link">About</a>
+        <a href="#" onclick="showPage('contact')" class="nav-link">Contact</a>
+        <a href="#" onclick="showPage('donate')" class="nav-link">Donate</a>
+    </nav>
+
+    <div class="container">
+        <!-- Products Page -->
+        <div id="products" class="page active">
+            <div class="tools-section">
+                <div class="tool-item">
+                    <img src="fraction_256x256.png" alt="Fraction Converter" class="tool-icon">
+                    <div class="tool-info">
+                        <h3>√5=? Fraction Unit Converter (<a href="#" onclick="alert('Description for Fraction Unit Converter')">description</a>)</h3>
+                        <p>Download from <a href="#" onclick="alert('Download link for Fraction Converter')">here</a></p>
                     </div>
-                    <div class="tool-content">
-                        <h3 class="tool-title">√5=? Fraction Unit Converter</h3>
-                        <p class="tool-description">
-                            When doing mechanical design or woodworking, it's often necessary to convert between inches,
-                            millimeters, and fractional inches. This tool can help you do just that. It also provides the 
-                            closest fractional inch representation and shows the difference from the original value. It's 
-                            a very handy and easy-to-use conversion tool.
-                        </p>
-                        <a href="#" class="download-btn">Download Now <i class="fas fa-download"></i></a>
+                </div>
+
+                <div class="tool-item">
+                    <img src="cost_title_256x256.png" alt="Price Cost Comparison" class="tool-icon">
+                    <div class="tool-info">
+                        <h3>Price Cost Comparison (<a href="#" onclick="alert('Description for Price Cost Comparison')">description</a>)</h3>
+                        <p>Download from <a href="#" onclick="alert('Download link for Price Cost Comparison')">here</a></p>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Page -->
+        <div id="about" class="page">
+            <div class="page-content">
+                <h2>About BEESTAR SOFTWARE</h2>
+                <p>Welcome to BEESTAR SOFTWARE, your destination for useful little tools that make everyday tasks easier and more efficient.</p>
+                
+                <h3>Our Mission</h3>
+                <p>We believe that small, well-designed tools can make a big difference in productivity and convenience. Our mission is to create simple, effective software solutions that solve common problems and enhance your digital experience.</p>
+                
+                <h3>What We Do</h3>
+                <p>We specialize in developing lightweight, user-friendly applications that focus on specific tasks. From unit converters to comparison tools, each of our products is designed with simplicity and functionality in mind.</p>
+                
+                <h3>Our Philosophy</h3>
+                <p>Quality over quantity. We prefer to create a few excellent tools rather than many mediocre ones. Each application is carefully crafted to provide maximum value with minimal complexity.</p>
+            </div>
+        </div>
+
+        <!-- Contact Page -->
+        <div id="contact" class="page">
+            <div class="page-content">
+                <h2>Contact Us</h2>
+                <p>We'd love to hear from you! Whether you have questions, suggestions, or need support, feel free to reach out.</p>
+                
+                <div class="contact-form">
+                    <form onsubmit="handleContactForm(event)">
+                        <div class="form-group">
+                            <label for="name">Name:</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject">Subject:</label>
+                            <input type="text" id="subject" name="subject" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Message:</label>
+                            <textarea id="message" name="message" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Donate Page -->
+        <div id="donate" class="page">
+            <div class="page-content">
+                <h2>Support Our Work</h2>
+                <p>BEESTAR SOFTWARE is committed to providing free, useful tools to everyone. Your support helps us continue developing and maintaining these applications.</p>
+                
+                <div class="donate-info">
+                    <h3>Why Donate?</h3>
+                    <p>Your donations help us:</p>
+                    <ul>
+                        <li>Keep our tools free for everyone</li>
+                        <li>Develop new useful applications</li>
+                        <li>Maintain and improve existing tools</li>
+                        <li>Provide better user support</li>
+                    </ul>
                 </div>
                 
-                <!-- 工具2 -->
-                <div class="tool-card">
-                    <div class="tool-icon">
-                        <img src="cost_title_256x256.png" alt="Price Cost Comparison">
-                    </div>
-                    <div class="tool-content">
-                        <h3 class="tool-title">Price Cost Comparison</h3>
-                        <p class="tool-description">
-                            The Price-Cost Comparison tool is designed to assist shoppers or anyone doing cost analysis. 
-                            When you want to compare the prices or costs of two items or projects, it helps you quickly 
-                            determine which one is cheaper or more cost-effective. By entering annual and hourly wages, 
-                            it can also help you figure out which option offers better value.
-                        </p>
-                        <a href="#" class="download-btn">Download Now <i class="fas fa-download"></i></a>
-                    </div>
+                <div class="donate-info">
+                    <h3>How to Donate</h3>
+                    <p>We accept donations through various methods. Every contribution, no matter how small, is greatly appreciated and helps us continue our mission of creating useful little tools.</p>
+                    <button class="btn" onclick="alert('Donation system would be integrated here')">Donate Now</button>
                 </div>
+                
+                <p style="text-align: center; margin-top: 20px;">
+                    <em>Thank you for your support!</em>
+                </p>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- 页脚 -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <p>BEESTAR SOFTWARE - Creating useful tools for everyday tasks</p>
-            </div>
-            <div class="footer-links">
-                <a href="#">Privacy Policy</a>
-                <a href="#">License</a>
-                <a href="#">Disclaimer</a>
-                <a href="about.html">About Us</a>
-                <a href="about.html#contact">Contact</a>
-            </div>
-            <div class="copyright">
-                <p>Copyright &copy; BEESTAR SOFTWARE 2025. ALL RIGHTS RESERVED.</p>
-            </div>
-        </div>
+        <p>Copyright © BEESTAR SOFTWARE 2025. ALL RIGHTS RESERVED. 
+        <a href="#" onclick="alert('Privacy Policy')">PRIVACY POLICY</a>. 
+        <a href="#" onclick="alert('License Information')">LICENSE</a>. 
+        <a href="#" onclick="alert('Disclaimer')">DISCLAIMER</a></p>
     </footer>
 
     <script>
-        // 简单的页面交互效果
-        document.addEventListener('DOMContentLoaded', function() {
-            // 导航栏滚动效果
-            const navbar = document.querySelector('.navbar');
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 100) {
-                    navbar.style.position = 'fixed';
-                    navbar.style.top = '0';
-                    navbar.style.width = '100%';
-                    navbar.style.zIndex = '1000';
-                } else {
-                    navbar.style.position = 'relative';
-                }
-            });
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
             
-            // 工具卡片动画
-            const toolCards = document.querySelectorAll('.tool-card');
-            toolCards.forEach(card => {
-                card.addEventListener('mouseenter', () => {
-                    card.style.boxShadow = '0 10px 25px rgba(0,0,0,0.15)';
-                });
-                
-                card.addEventListener('mouseleave', () => {
-                    card.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
-                });
-            });
-        });
+            // Remove active class from all nav links
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Add active class to clicked nav link
+            event.target.classList.add('active');
+        }
+        
+        function handleContactForm(event) {
+            event.preventDefault();
+            alert('Thank you for your message! We will get back to you soon.');
+            event.target.reset();
+        }
     </script>
 </body>
 </html>
