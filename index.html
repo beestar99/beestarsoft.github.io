@@ -58,19 +58,25 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
+            position: relative; /* 添加相对定位 */
+            width: 100%; /* 确保容器宽度足够 */
         }
         
         .logo {
             width: 120px;
             height: 120px;
-            margin-right: 15px;
+            margin-right: 0;   /* 15px */
+            position: relative;
+            left: -80px; /* 向左移动logo */
         }
         
         .company-name {
             font-size: 36px;
             font-weight: 900;
             letter-spacing: 1px;
+            position: absolute; /* 绝对定位使其居中 */
+            left: 50%;
+            transform: translateX(-50%);
         }
         
         .subtitle {
@@ -124,9 +130,10 @@
         
         .section-title {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 20px; /* 减小底部间距 40 */
+            margin-top: 20px; /* 添加上部间距控制 */
             color: var(--primary-blue);
-            font-size: 30px;
+            font-size: 26px;  /* 30 */
             position: relative;
         }
         
@@ -218,7 +225,7 @@
         .footer {
             background-color: var(--dark-bg);
             color: var(--white);
-            padding: 20px 0 10px;
+            padding: 10px 0 5px; /* 减小上下内边距20,  10 */
         }
         
         .footer-content {
@@ -231,7 +238,8 @@
             justify-content: center;
             flex-wrap: wrap;
             gap: 15px;
-            margin-bottom: 10px;
+            margin-bottom: 5px; /* 减小底部间距 10 */
+            padding: 5px 0; /* 添加少量内边距 */
         }
         
         .footer-links a {
@@ -249,9 +257,10 @@
             text-align: center;
             font-size: 14px;
             color: var(--secondary-gray);
-            padding-top: 10px;
+            padding-top: 5px; /* 减小顶部内边距 10 */
             border-top: 1px solid #444;
-            margin-top: 10px;
+            margin-top: 5px;/* 减小顶部外边距 10 */
+            padding-bottom: 5px; /* 添加底部内边距 */
         }
         
         /* 响应式设计 */
