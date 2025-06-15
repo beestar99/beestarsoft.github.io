@@ -56,35 +56,54 @@
 
         .logo-container {
             display: flex;
-            justify-content: flex-start; /* 从左对齐 */
-          /*  align-items: center;
-            justify-content: center;  保持居中 */
-            position: relative; /* 添加相对定位 */
-            padding-left: 180px; /* 留出中间空间 */
-            /* width: 100%; 确保容器宽度足够 */
-            height: 120px;        /* 容器高度与 logo 一致 */
+            align-items: center;
+            justify-content: center;
+            gap: 50px;
+        }
+        
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin-right: 15px;
+        }
+        
+        .company-name {
+            font-size: 36px;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+      
+
+            
+        /*
+        .logo-container {
+            display: flex;
+            justify-content: flex-start;
+         
+            position: relative; 
+            padding-left: 180px; 
+         
+            height: 120px;       
         }
     
         .company-name {
             font-size: 36px;
             font-weight: 900;
             letter-spacing: 1px;
-            position: absolute; /* 绝对定位使其居中 */
+            position: absolute; 
             left: 50%;
             transform: translateX(-50%);
         }
         
        .logo {
             position: absolute;
-            top: 50%;           /* 上下居中 */
-            left: 20px;         /* 靠左边 20px */
-            transform: translateY(-50%); /* 垂直方向居中 */
+            top: 50%;          
+            left: 20px;        
+            transform: translateY(-50%);
             width: 120px;
             height: 120px;
         }
-
-            
-        /*
+        
         .logo-container {
             display: flex;
             align-items: center;
