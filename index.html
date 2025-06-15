@@ -56,10 +56,13 @@
 
         .logo-container {
             display: flex;
-            align-items: center;
-            justify-content: center; /* 保持居中 */
+            justify-content: flex-start; /* 从左对齐 */
+          /*  align-items: center;
+            justify-content: center;  保持居中 */
             position: relative; /* 添加相对定位 */
-            width: 100%; /* 确保容器宽度足够 */
+            padding-left: 180px; /* 留出中间空间 */
+            /* width: 100%; 确保容器宽度足够 */
+            height: 120px;        /* 容器高度与 logo 一致 */
         }
     
         .company-name {
@@ -71,13 +74,15 @@
             transform: translateX(-50%);
         }
         
-        .logo {
+       .logo {
+            position: absolute;
+            top: 50%;           /* 上下居中 */
+            left: 20px;         /* 靠左边 20px */
+            transform: translateY(-50%); /* 垂直方向居中 */
             width: 120px;
             height: 120px;
-            margin-right: 0; /* 移除原来的右边距 */
-            position: relative;
-            left: -180px; /* 向左移动logo */
         }
+
             
         /*
         .logo-container {
@@ -92,6 +97,13 @@
             width: 120px;
             height: 120px;
             margin-right: 15px;
+        }
+         .logo {
+            width: 120px;
+            height: 120px;
+            margin-right: 0;
+            position: relative;
+           left: -180px;  
         }
         
         .company-name {
