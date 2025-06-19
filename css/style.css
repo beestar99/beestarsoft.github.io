@@ -233,8 +233,6 @@ h1, h2, h3, h4, h5 {
 .btn:hover {
     background-color: #45a049;
 }
-
-/* 浮动窗口样式 - 初始状态为隐藏 */
 .floating-window {
     position: fixed;
     top: 50%;
@@ -242,23 +240,13 @@ h1, h2, h3, h4, h5 {
     transform: translate(-50%, -50%);
     width: 300px;
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color: white;
     border: 1px solid #ddd;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-}
-
-/* 浮动窗口显示时的样式 */
-.floating-window.active {
-    opacity: 1;
-    visibility: visible;
-}
-.floating-window {
-    /* 实现淡入淡出效果，其他样式保持不变 */
+    
+    /* 淡入淡出相关属性 */
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
