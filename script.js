@@ -29,12 +29,27 @@
     ];
     
     // 获取DOM元素
-    const btn1 = document.getElementById('btn1');
-    const btn2 = document.getElementById('btn2');
+    const btn1 = document.getElementById('download-btn1');
+    const btn2 = document.getElementById('download-btn2');
     const floatingWindow = document.getElementById('floatingWindow');
     const floatingMessage = document.getElementById('floatingMessage');
     const closeBtn = document.getElementById('closeBtn');
     
+     // 如果确定有两个按钮才这样写
+    if(btn1 && btn2) {
+        btn1.addEventListener('click', function(e) {
+            e.preventDefault(); // 阻止链接默认行为
+            floatingMessage.textContent = showRandomMessage();
+            showFloatingWindow();
+        });
+        
+        btn2.addEventListener('click', function(e) {
+            e.preventDefault(); // 阻止链接默认行为
+            floatingMessage.textContent = showRandomMessage();
+            showFloatingWindow();
+        });
+    }
+
     // 显示随机消息函数
     function showRandomMessage() {
         const index = Math.floor(Math.random() * messages.length);
