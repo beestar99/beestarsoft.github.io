@@ -257,6 +257,17 @@ h1, h2, h3, h4, h5 {
     opacity: 1;
     visibility: visible;
 }
+.floating-window {
+    /* 实现淡入淡出效果，其他样式保持不变 */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.floating-window.active {
+    opacity: 1;
+    visibility: visible;
+}
 
 .floating-content {
     text-align: center;
