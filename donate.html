@@ -1,12 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Donate | BEESTAR SOFTWARE</title>
+    <title>Privacy Policy | BEESTAR SOFTWARE</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="icon" href="/donate60.png" type="image/png">
-    <link rel="shortcut icon" href="/donate60.png" type="image/png">
+    <link rel="icon" href="/donate48.png" type="image/png">
+    <link rel="shortcut icon" href="/donate48.png" type="image/png">
+    <style>
+        /* PayPal 按钮样式 */
+        .paypal-donate-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .paypal-amount-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Open Sans', sans-serif;
+        }
+        .paypal-button {
+            background-color: #FFD140;
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            font-weight: bold;
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .paypal-button:hover {
+            background-color: #F2C23A;
+        }
+        .paypal-button i {
+            font-size: 1.1em;
+        }
+    </style>
 </head>
 <body>
     <!-- 顶部通栏 -->
@@ -37,8 +71,6 @@
 
     <!-- 主要内容 -->
     <main class="container" style="padding: 20px; max-width: 800px; margin: 0 auto;">
-     
-         <!-- <h1>Donate/h1> -->
         <div id="donate" class="page">
             <div class="page-content">
                 <h2>Support Our Work</h2>
@@ -58,34 +90,19 @@
                 <div class="donate-info">
                     <h3>How to Donate</h3>
                     <p>We accept donations through various methods. Every contribution, no matter how small, is greatly appreciated and helps us continue our mission of creating useful little tools.</p>
-                    <button class="btn" onclick="alert('Donation system would be integrated here')">Donate Now</button>
-                </div>
-                
-                <p style="text-align: center; margin-top: 20px;">
-                    <em>Thank you for your support!</em>
-                </p>
-            </div>
-        </div>
-    </div>
-    </main>
-    
-    <!-- 页脚 -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content"></div>
-            <div class="footer-links">
-                <a href="privacypolicy.html">Privacy Policy</a>
-                <a href="license.html">License</a>
-                <a href="termsofuse.html">Terms of Use</a>
-                <a href="about.html">About Us</a>
-                <a href="about.html#contact">Contact</a>
-            </div>
-            <div class="copyright">
-                <p>Copyright &copy; BEESTAR SOFTWARE 2025. ALL RIGHTS RESERVED.</p>
-            </div>
-        </div>
-    </footer>
-    
-    <script src="js/common.js"></script>
-</body>
-</html>
+                    
+                    <!-- PayPal 捐赠按钮和金额选择 -->
+                    <div class="paypal-donate-container">
+                        <select id="donation-amount" class="paypal-amount-select">
+                            <option value="2">$2</option>
+                            <option value="5" selected>$5</option>
+                            <option value="10">$10</option>
+                        </select>
+                        
+                        <form action="https://www.paypal.com/donate" method="post" target="_blank">
+                            <input type="hidden" name="business" value="YOUR_PAYPAL_EMAIL@example.com">
+                            <input type="hidden" name="currency_code" value="USD">
+                            <input type="hidden" name="amount" id="paypal-amount" value="5">
+                            <button type="submit" class="paypal-button">
+                                <i class="fab fa-paypal"></i> Donate
+                            </button
