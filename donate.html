@@ -105,4 +105,48 @@
                             <input type="hidden" name="amount" id="paypal-amount" value="5">
                             <button type="submit" class="paypal-button">
                                 <i class="fab fa-paypal"></i> Donate
-                            </button
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 10px;">
+                        <img src="https://www.paypalobjects.com/images/Debit_Credit_APM.svg" alt="Payment methods" style="height: 30px;">
+                        <p style="font-size: 0.8rem; margin-top: 5px;">
+                            Powered by <img src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg" alt="PayPal" style="height:14px; vertical-align:middle;">
+                        </p>
+                    </div>
+                </div>
+                
+                <p style="text-align: center; margin-top: 20px;">
+                    <em>Thank you for your support!</em>
+                </p>
+            </div>
+        </div>
+    </main>
+    
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content"></div>
+            <div class="footer-links">
+                <a href="privacypolicy.html">Privacy Policy</a>
+                <a href="license.html">License</a>
+                <a href="termsofuse.html">Terms of Use</a>
+                <a href="about.html">About Us</a>
+                <a href="about.html#contact">Contact</a>
+            </div>
+            <div class="copyright">
+                <p>Copyright &copy; BEESTAR SOFTWARE 2025. ALL RIGHTS RESERVED.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="js/common.js"></script>
+    <script>
+        // 更新PayPal金额
+        document.getElementById('donation-amount').addEventListener('change', function() {
+            document.getElementById('paypal-amount').value = this.value;
+        });
+    </script>
+</body>
+</html>
