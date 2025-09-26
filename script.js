@@ -14,18 +14,19 @@
     
     // 消息数组
     const messages = [
-        "Still in the lab... we haven't even named it yet. 🧪",
-        "Coming eventually. Not today. Not tomorrow. But someday. 😌",
-        "You clicked too soon. But hey, that means you're curious — we like that. 🧐",
-        "Patience is a virtue, and we're testing yours. 😇",
-        "This feature is like fine wine — it needs time to mature. 🍷",
-        "We're baking something special. Check back later! 🧑‍🍳",
-        "This feature is currently dreaming of its future. Let it sleep a bit. 😴",
-        "You're early. Like... really early. But we love that. 💖",
-        "We're still deciding what this button wants to be when it grows up.",
-        "Patience, friend. Great features age like cheese. Or code. Mostly code. 🧀💻",
-        "It's on the roadmap — we just haven’t found the map yet. 🗺️",
-        "This button leads to the future. Unfortunately, we're still in the present. ⏳"
+         " A phone version available in the both App Store and Play Store, A desktop version available in the Microsoft Store. "
+       // "Still in the lab... we haven't even named it yet. 🧪",
+       // "Coming eventually. Not today. Not tomorrow. But someday. 😌",
+       // "You clicked too soon. But hey, that means you're curious — we like that. 🧐",
+        //"Patience is a virtue, and we're testing yours. 😇",
+        //"This feature is like fine wine — it needs time to mature. 🍷",
+       // "We're baking something special. Check back later! 🧑‍🍳",
+        //"This feature is currently dreaming of its future. Let it sleep a bit. 😴",
+      //  "You're early. Like... really early. But we love that. 💖",
+      //  "We're still deciding what this button wants to be when it grows up.",
+     //   "Patience, friend. Great features age like cheese. Or code. Mostly code. 🧀💻",
+     //   "It's on the roadmap — we just haven’t found the map yet. 🗺️",
+     //   "This button leads to the future. Unfortunately, we're still in the present. ⏳"
     ];
     
     // 获取DOM元素
@@ -89,4 +90,5 @@
             hideFloatingWindow();
         }
     });
+
 });
