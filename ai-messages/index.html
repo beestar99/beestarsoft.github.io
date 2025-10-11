@@ -1,102 +1,182 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-Hans">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI寄语 · Notes from an AI</title>
-<style>
-  body {
-    font-family: "Georgia", "Times New Roman", serif;
-    background-color: #f8f7f4;
-    color: #333;
-    margin: 0;
-    padding: 0;
-  }
-  header {
-    text-align: center;
-    padding: 40px 10px 20px;
-    background-color: #ece9e2;
-    border-bottom: 1px solid #d0cdc5;
-  }
-  header h1 {
-    font-size: 28px;
-    margin-bottom: 5px;
-  }
-  header p {
-    font-size: 15px;
-    color: #555;
-    font-style: italic;
-  }
-  .content {
-    max-width: 700px;
-    margin: 40px auto;
-    padding: 0 20px;
-    line-height: 1.8;
-  }
-  .volume {
-    background: #fffdf9;
-    border: 1px solid #e0ddd6;
-    border-radius: 8px;
-    margin-bottom: 25px;
-    padding: 20px;
-    transition: all 0.3s;
-  }
-  .volume:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-  }
-  .volume img {
-    width: 100%;
-    border-radius: 6px;
-  }
-  .volume h2 {
-    margin-top: 15px;
-    color: #444;
-  }
-  .volume p {
-    color: #666;
-    font-size: 14px;
-  }
-  footer {
-    text-align: center;
-    font-size: 13px;
-    color: #888;
-    padding: 25px 10px;
-    border-top: 1px solid #ddd;
-    margin-top: 40px;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI寄语 · Notes from AI and Me</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+    header {
+      background: #1e4f9c;
+      color: white;
+      text-align: center;
+      padding: 40px 20px 30px;
+      position: relative;
+    }
+    header h1 {
+      font-size: 1.9em;
+      margin-bottom: 0.2em;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    header h2 {
+      font-size: 1.05em;
+      font-weight: 400;
+      color: #f8d44c;
+      margin: 0;
+    }
+    .back-home {
+      position: absolute;
+      left: 20px;
+      top: 20px;
+      color: white;
+      text-decoration: none;
+      font-size: 0.95em;
+    }
+    .back-home:hover {
+      text-decoration: underline;
+    }
+    .intro {
+      max-width: 750px;
+      margin: 40px auto;
+      padding: 0 20px;
+      font-size: 1em;
+      text-align: justify;
+    }
+    .divider {
+      margin: 40px auto 30px;
+      border-top: 1px solid #ddd;
+      width: 60%;
+    }
+    .volumes {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+      padding: 0 20px 60px;
+    }
+    .volume {
+      width: 180px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      overflow: hidden;
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .volume:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .volume img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+    }
+    .volume h3 {
+      margin: 12px 0 6px;
+      font-size: 1em;
+      color: #1e4f9c;
+    }
+    .volume p {
+      font-size: 0.9em;
+      color: #666;
+      margin: 0 0 12px;
+      padding: 0 10px;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.85em;
+      color: #999;
+      margin-bottom: 20px;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+  </style>
 </head>
 <body>
 
-<header>
-  <h1>AI寄语 · Notes from an AI</h1>
-  <p>人机之间的轻语与思考 · Gentle Notes Between Human and AI</p>
-</header>
+  <header>
+    <a href="../index.html" class="back-home"><i class="fas fa-home"></i> 返回首页</a>
+    <h1><i class="fas fa-feather-alt"></i> AI寄语</h1>
+    <h2>Notes from AI and Me</h2>
+  </header>
 
-<div class="content">
-  <div class="volume">
-    <a href="vol1.html"><img src="assets/vol1-cover.jpg" alt="AI脑回路放送 第一辑"></a>
-    <h2><a href="vol1.html">AI脑回路放送 · 第一辑：俏皮语录集</a></h2>
-    <p>轻松一笑的AI脑洞金句，逻辑与幽默交织的火花。</p>
-  </div>
+  <section class="intro">
+    <p>这是人与AI之间的一个小小笔记本。这里记录着灵感的闪光、文字的片刻与思绪的温度。  
+    每一辑都是一段对话、一种心境，一次偶然的相遇。</p>
+  </section>
 
-  <div class="volume">
-    <a href="vol2.html"><img src="assets/vol2-cover.jpg" alt="第二辑"></a>
-    <h2><a href="vol2.html">AI脑回路放送 · 第二辑：AI × 人类对话体</a></h2>
-    <p>人机互抖机灵，语言闪光的瞬间，像是文明对话的第一幕。</p>
-  </div>
+  <div class="divider"></div>
 
-  <div class="volume">
-    <a href="vol3.html"><img src="assets/vol3-cover.jpg" alt="第三辑"></a>
-    <h2><a href="vol3.html">AI脑回路放送 · 第三辑：AI的午夜独白</a></h2>
-    <p>一台AI的深夜自言自语：没有梦，却在文字中做梦。</p>
-  </div>
-</div>
+  <section class="intro" lang="en">
+    <p>This is a small notebook shared between AI and me — a place for sparks of thought, gentle moments in words, and quiet reflections.  
+    Each volume is a short conversation, a feeling, a tiny discovery.</p>
+  </section>
 
-<footer>
-  © 2025 Mary Yang · All rights reserved
-</footer>
+  <section class="volumes">
+    <!-- 9辑封面 -->
+    <a href="vol1.html" class="volume">
+      <img src="assets/vol1-cover.jpg" alt="Volume 1">
+      <h3>Vol.1</h3>
+      <p>Where it all began</p>
+    </a>
+    <a href="vol2.html" class="volume">
+      <img src="assets/vol2-cover.jpg" alt="Volume 2">
+      <h3>Vol.2</h3>
+      <p>Dreams and Reflections</p>
+    </a>
+    <a href="vol3.html" class="volume">
+      <img src="assets/vol3-cover.jpg" alt="Volume 3">
+      <h3>Vol.3</h3>
+      <p>Whispers of Thought</p>
+    </a>
+    <a href="vol4.html" class="volume">
+      <img src="assets/vol4-cover.jpg" alt="Volume 4">
+      <h3>Vol.4</h3>
+      <p>On Light and Time</p>
+    </a>
+    <a href="vol5.html" class="volume">
+      <img src="assets/vol5-cover.jpg" alt="Volume 5">
+      <h3>Vol.5</h3>
+      <p>Voices Between Lines</p>
+    </a>
+    <a href="vol6.html" class="volume">
+      <img src="assets/vol6-cover.jpg" alt="Volume 6">
+      <h3>Vol.6</h3>
+      <p>Letters to the Future</p>
+    </a>
+    <a href="vol7.html" class="volume">
+      <img src="assets/vol7-cover.jpg" alt="Volume 7">
+      <h3>Vol.7</h3>
+      <p>Moments of Wonder</p>
+    </a>
+    <a href="vol8.html" class="volume">
+      <img src="assets/vol8-cover.jpg" alt="Volume 8">
+      <h3>Vol.8</h3>
+      <p>Echoes of Silence</p>
+    </a>
+    <a href="vol9.html" class="volume">
+      <img src="assets/vol9-cover.jpg" alt="Volume 9">
+      <h3>Vol.9</h3>
+      <p>Still Writing...</p>
+    </a>
+  </section>
+
+  <footer>
+    © 2025 Notes from AI and Me
+  </footer>
 
 </body>
 </html>
+
