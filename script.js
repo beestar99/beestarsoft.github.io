@@ -14,7 +14,7 @@
     
     // 消息数组
     const messages = [
-         " Available now: phone version in the Apple App Store and Google Play Store. Desktop version coming soon to the Microsoft Store."
+         " Available now: phone version in the Apple App Store and Google Play Store. Desktop version in the Microsoft Store."
        //A phone version available in the both Apple App Store and Google Play Store, A desktop version available in the Microsoft Store."
        // "Still in the lab... we haven't even named it yet. 🧪",
        // "Coming eventually. Not today. Not tomorrow. But someday. 😌",
@@ -93,6 +93,7 @@
     });
 
 });
+
 
 
 
