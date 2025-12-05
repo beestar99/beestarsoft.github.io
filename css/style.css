@@ -70,7 +70,7 @@ h1, h2, h3, h4, h5 {
 
 .company-name {
     position: absolute;
-    left: 64%;
+    left: 65%;
     transform: translateX(-50%);
     font-size: 36px;
     font-weight: 900;
