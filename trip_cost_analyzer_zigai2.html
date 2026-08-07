@@ -1,0 +1,1928 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0f172a">
+    <title>旅行成本分析器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        header {
+            background: #1e4f9c;
+            color: white;
+            text-align: center;
+            padding: 10px 10px 12px;
+            position: relative;
+        }
+        header h1 {
+            font-size: 1.9em;
+            margin-bottom: 0.2em;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        header h2 {
+            font-size: 1.05em;
+            font-weight: 400;
+            color: #f8d44c;
+            margin: 0;
+        }
+        .back-home {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.95em;
+        }
+        .back-home:hover {
+            text-decoration: underline;
+        }
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --text: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #475569;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+        }
+
+        /* 启动画面 */
+        #splash {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.6s ease;
+        }
+
+        #splash.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .splash-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .splash-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .splash-subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .splash-loader {
+            margin-top: 30px;
+            width: 120px;
+            height: 3px;
+            background: var(--surface-light);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .splash-loader-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            animation: load 2s ease forwards;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes load {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* 页面容器 */
+        .page {
+            position: fixed;
+            inset: 0;
+            display: none;
+            flex-direction: column;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: calc(60px + env(safe-area-inset-bottom));
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            background: var(--surface);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 20px;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .nav-btn:active {
+            background: var(--surface-light);
+        }
+
+        /* 内容区域 */
+        .content {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        /* 卡片 */
+        .card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title .icon {
+            font-size: 20px;
+        }
+
+        /* 输入组 */
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-field {
+            width: 100%;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: var(--text);
+            font-size: 16px;
+            outline: none;
+            transition: all 0.2s;
+            -webkit-appearance: none;
+        }
+
+        .input-field:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .input-field::placeholder {
+            color: #64748b;
+        }
+
+        .input-unit {
+            position: absolute;
+            right: 16px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .input-hint {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* 按钮 */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        .btn-secondary {
+            background: var(--surface-light);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:active {
+            background: var(--border);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--secondary), #059669);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        /* 结果区域 */
+        .result-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1));
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        .result-value {
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .result-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .result-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .detail-item {
+            background: var(--surface);
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .detail-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* 分析结果 */
+        .analysis-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .analysis-title {
+            font-weight: 600;
+            color: var(--warning);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .analysis-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 14px;
+        }
+
+        .analysis-item:last-child {
+            border-bottom: none;
+        }
+
+        /* 选择器 */
+        .segmented-control {
+            display: flex;
+            background: var(--bg);
+            border-radius: 10px;
+            padding: 4px;
+            margin-bottom: 16px;
+        }
+
+        .segment-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .segment-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* 开关 */
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .toggle-row:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-label {
+            font-size: 15px;
+        }
+
+        .toggle-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .switch {
+            position: relative;
+            width: 50px;
+            height: 28px;
+            background: var(--surface-light);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.3s;
+            flex-shrink: 0;
+        }
+
+        .switch.on {
+            background: var(--primary);
+        }
+
+        .switch::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .switch.on::after {
+            transform: translateX(22px);
+        }
+
+        /* 下拉选择 */
+        .select-field {
+            width: 100%;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: var(--text);
+            font-size: 16px;
+            outline: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 40px;
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 6px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 11px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item-icon {
+            font-size: 22px;
+        }
+
+        /* 统计页面 */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* 历史记录 */
+        .history-item {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-info h4 {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .history-info p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .history-cost {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        /* 提示 */
+        .tip-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 12px 16px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .tip-box strong {
+            color: var(--primary);
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* 滚动条隐藏 */
+        ::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+
+        /* 动画 */
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 车辆类型选择 */
+        .vehicle-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .vehicle-option {
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .vehicle-option.selected {
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .vehicle-option .emoji {
+            font-size: 28px;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .vehicle-option .label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* 滑块 */
+        .slider-container {
+            margin-bottom: 16px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--bg);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 高级选项折叠 */
+        .advanced-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .advanced-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+
+        .advanced-content {
+            display: none;
+        }
+
+        .advanced-content.open {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .chevron {
+            transition: transform 0.3s;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .chevron.rotated {
+            transform: rotate(180deg);
+        }
+
+        /* 标签 */
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            background: var(--bg);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-right: 6px;
+            margin-bottom: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .tag.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* 用法提示 */
+        .usage-steps {
+            counter-reset: step;
+        }
+
+        .usage-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: var(--bg);
+            border-radius: 12px;
+        }
+
+        .usage-step::before {
+            counter-increment: step;
+            content: counter(step);
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .usage-step-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .usage-step-text strong {
+            color: var(--text);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        /* 响应式 */
+        @media (min-width: 768px) {
+            body {
+                max-width: 430px;
+                margin: 0 auto;
+                border-left: 1px solid var(--border);
+                border-right: 1px solid var(--border);
+            }
+            .bottom-nav {
+                max-width: 430px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 启动画面 -->
+    <div id="splash">
+        <div class="splash-icon">  <img src="tripcost-256T.png" alt="Trip Cost"> </div>
+        <div class="splash-title">旅行成本分析器</div>
+        <div class="splash-subtitle">Trip Cost Analyzer</div>
+        <div class="splash-loader">
+            <div class="splash-loader-bar"></div>
+        </div>
+    </div>
+
+    <!-- 主页 -->
+    
+    
+    <div class="page active" id="page-home">
+        <div class="navbar">
+           <header>
+                <a href="https://beestarsoft.com/index.html" class="back-home"><i class="fas fa-home"></i> 返回首页</a>
+   
+            </header>
+        
+            <div class="nav-title"><img src="tripcost-40T.png" alt="Trip Cost"> 自驾游 -- 致手机🤩（试用版） </div>
+            <button class="nav-btn" onclick="showPage('settings')">⚙️</button>
+        </div>
+        <div class="content">
+            <!-- 用法提示 -->
+            <div class="card">
+                <div class="card-title"><span class="icon">📖</span> 快速用法</div>
+                <div class="usage-steps">
+                    <div class="usage-step">
+                        <div class="usage-step-text">
+                            <strong>输入任意3项</strong>
+                            填写油价、距离、油耗( MPG 或 L/100km )、总成本4项中的任意3项，即可计算得到空缺的第四项
+                        </div>
+                    </div>
+                    <div class="usage-step">
+                        <div class="usage-step-text">
+                            <strong>点击计算</strong>
+                            系统自动算出第4个未知项，并给出详细分析
+                        </div>
+                    </div>
+                    <div class="usage-step">
+                        <div class="usage-step-text">
+                            <strong>高级计算</strong>
+                            点击底部按钮进入高级模式，包含更多费用项
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 单位切换 -->
+            <div class="card">
+                <div class="segmented-control">
+                    <button class="segment-btn active" onclick="setUnit('metric')" id="btn-metric">公制 🇨🇳</button>
+                    <button class="segment-btn" onclick="setUnit('imperial')" id="btn-imperial">英制 🇺🇸</button>
+                </div>
+
+                <!-- 输入框 -->
+                <div class="input-group">
+                    <label class="input-label">⛽ 油价 <span id="label-fuel-price">(元/升)</span></label>
+                    <div class="input-wrapper">
+                        <input type="number" class="input-field" id="fuel-price" placeholder="例如: 8.5" step="0.01">
+                        <span class="input-unit" id="unit-fuel-price">¥/L</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">📏 行驶距离 <span id="label-distance">(公里)</span></label>
+                    <div class="input-wrapper">
+                        <input type="number" class="input-field" id="distance" placeholder="例如: 500" step="0.1">
+                        <span class="input-unit" id="unit-distance">km</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">🚙 油耗 <span id="label-efficiency">(L/100km)</span></label>
+                    <div class="input-wrapper">
+                        <input type="number" class="input-field" id="efficiency" placeholder="例如: 7.5" step="0.1">
+                        <span class="input-unit" id="unit-efficiency">L/100km</span>
+                    </div>
+                    <div class="input-hint" id="hint-efficiency">输入 L/100km，或点击切换为 MPG</div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">💰 总燃油成本</label>
+                    <div class="input-wrapper">
+                        <input type="number" class="input-field" id="total-cost" placeholder="例如: 300" step="0.01">
+                        <span class="input-unit" id="unit-total-cost">¥</span>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="calculateBasic()">
+                    🔢 计算空缺项
+                </button>
+
+                <button class="btn btn-outline" onclick="clearBasic()">
+                    🗑️ 清空输入
+                </button>
+
+                <!-- 计算结果 -->
+                <div id="basic-result" style="display:none;">
+                    <div class="result-box">
+                        <div class="result-value" id="result-value">--</div>
+                        <div class="result-label" id="result-label">计算结果</div>
+                    </div>
+                    <div class="result-details" id="result-details"></div>
+                    <div class="analysis-box" id="analysis-box">
+                        <div class="analysis-title">📊 智能分析</div>
+                        <div id="analysis-content"></div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-success" onclick="showPage('advanced')">
+                🚀 进入高级计算模式
+            </button>
+
+            <div style="height: 20px;"></div>
+        </div>
+    </div>
+
+    <!-- 高级计算页 -->
+    <div class="page" id="page-advanced">
+        <div class="navbar">
+            <button class="nav-btn" onclick="showPage('home')">←</button>
+            <div class="nav-title">🚀 高级计算</div>
+            <button class="nav-btn" onclick="showPage('settings')">⚙️</button>
+        </div>
+        <div class="content">
+            <div class="tip-box">
+                <strong>💡 提示：</strong>高级模式会自动从基础数据获取信息。您可以添加额外费用项来获得更精确的总成本估算。
+            </div>
+
+            <!-- 车辆类型 -->
+            <div class="card">
+                <div class="card-title"><span class="icon">🚗</span> 车辆类型</div>
+                <div class="vehicle-grid">
+                    <div class="vehicle-option selected" onclick="selectVehicle(this, 'sedan')">
+                        <span class="emoji">🚗</span>
+                        <span class="label">轿车</span>
+                    </div>
+                    <div class="vehicle-option" onclick="selectVehicle(this, 'suv')">
+                        <span class="emoji">🚙</span>
+                        <span class="label">SUV</span>
+                    </div>
+                    <div class="vehicle-option" onclick="selectVehicle(this, 'truck')">
+                        <span class="emoji">🚚</span>
+                        <span class="label">皮卡</span>
+                    </div>
+                    <div class="vehicle-option" onclick="selectVehicle(this, 'rv')">
+                        <span class="emoji">🚐</span>
+                        <span class="label">房车</span>
+                    </div>
+                    <div class="vehicle-option" onclick="selectVehicle(this, 'trailer')">
+                        <span class="emoji">🛻</span>
+                        <span class="label">拖挂</span>
+                    </div>
+                    <div class="vehicle-option" onclick="selectVehicle(this, 'motorcycle')">
+                        <span class="emoji">🏍️</span>
+                        <span class="label">摩托</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 基础信息 -->
+            <div class="card">
+                <div class="card-title"><span class="icon">📊</span> 基础信息</div>
+                <div class="input-group">
+                    <label class="input-label">⛽ 油价</label>
+                    <div class="input-wrapper">
+                        <input type="number" class="input-field" id="adv-fuel-price" step="0.01">
+                        <span class="input-unit" id="adv-unit-fuel">¥/L</span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">📏 距离</label>
+                    <div class="input-wrapper">
+                        <input type="number" class="input-field" id="adv-distance" step="0.1">
+                        <span class="input-unit" id="adv-unit-dist">km</span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">🚙 油耗</label>
+                    <div class="input-wrapper">
+                        <input type="number" class="input-field" id="adv-efficiency" step="0.1">
+                        <span class="input-unit" id="adv-unit-eff">L/100km</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 额外费用 -->
+            <div class="card">
+                <div class="card-title"><span class="icon">💸</span> 额外费用</div>
+
+                <div class="toggle-row">
+                    <div>
+                        <div class="toggle-label">🛣️ 过路费 (Toll)</div>
+                        <div class="toggle-desc">高速公路、桥梁费用</div>
+                    </div>
+                    <div class="switch" id="toggle-toll" onclick="toggleSwitch('toggle-toll')"></div>
+                </div>
+                <div class="input-group" id="input-toll" style="display:none;">
+                    <input type="number" class="input-field" id="toll-cost" placeholder="过路费金额" step="0.01">
+                </div>
+
+                <div class="toggle-row">
+                    <div>
+                        <div class="toggle-label">🅿️ 停车费 (Parking)</div>
+                        <div class="toggle-desc">目的地停车费用</div>
+                    </div>
+                    <div class="switch" id="toggle-parking" onclick="toggleSwitch('toggle-parking')"></div>
+                </div>
+                <div class="input-group" id="input-parking" style="display:none;">
+                    <input type="number" class="input-field" id="parking-cost" placeholder="停车费金额" step="0.01">
+                </div>
+
+                <div class="toggle-row">
+                    <div>
+                        <div class="toggle-label">🏨 住宿费 (Hotel)</div>
+                        <div class="toggle-desc">中途或目的地住宿</div>
+                    </div>
+                    <div class="switch" id="toggle-hotel" onclick="toggleSwitch('toggle-hotel')"></div>
+                </div>
+                <div class="input-group" id="input-hotel" style="display:none;">
+                    <input type="number" class="input-field" id="hotel-cost" placeholder="住宿费金额" step="0.01">
+                    <div class="input-hint" style="margin-top:8px;">
+                        晚数: 
+                        <input type="number" id="hotel-nights" value="1" style="width:60px; background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:4px; color:var(--text); text-align:center;">
+                    </div>
+                </div>
+
+                <div class="toggle-row">
+                    <div>
+                        <div class="toggle-label">🍽️ 餐饮费 (Food)</div>
+                        <div class="toggle-desc">途中及目的地餐饮</div>
+                    </div>
+                    <div class="switch" id="toggle-food" onclick="toggleSwitch('toggle-food')"></div>
+                </div>
+                <div class="input-group" id="input-food" style="display:none;">
+                    <input type="number" class="input-field" id="food-cost" placeholder="每日餐饮预算" step="0.01">
+                    <div class="input-hint" style="margin-top:8px;">
+                        天数: 
+                        <input type="number" id="food-days" value="1" style="width:60px; background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:4px; color:var(--text); text-align:center;">
+                    </div>
+                </div>
+
+                <div class="toggle-row">
+                    <div>
+                        <div class="toggle-label">🔧 车辆折旧</div>
+                        <div class="toggle-desc">自动估算 (基于车型和距离)</div>
+                    </div>
+                    <div class="switch on" id="toggle-depreciation" onclick="toggleSwitch('toggle-depreciation')"></div>
+                </div>
+                <div class="input-hint" style="margin-top:8px; color: var(--warning);">
+                    💡 折旧按每公里 <span id="dep-rate">0.5</span> 元自动计算
+                </div>
+            </div>
+
+            <!-- 计算按钮 -->
+            <button class="btn btn-primary" onclick="calculateAdvanced()">
+                🧮 计算总成本
+            </button>
+
+            <!-- 高级结果 -->
+            <div id="advanced-result" style="display:none;">
+                <div class="card">
+                    <div class="result-box">
+                        <div class="result-value" id="adv-total">--</div>
+                        <div class="result-label">预计总成本</div>
+                    </div>
+                    <div class="analysis-box">
+                        <div class="analysis-title">📋 成本明细</div>
+                        <div id="adv-breakdown"></div>
+                    </div>
+                    <div class="analysis-box" style="border-color: var(--secondary); background: rgba(16, 185, 129, 0.1);">
+                        <div class="analysis-title" style="color: var(--secondary);">💡 建议</div>
+                        <div id="adv-tips"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="height: 20px;"></div>
+        </div>
+    </div>
+
+    <!-- 统计页 -->
+    <div class="page" id="page-stats">
+        <div class="navbar">
+            <div class="nav-title">📈 统计分析</div>
+            <button class="nav-btn" onclick="showPage('settings')">⚙️</button>
+        </div>
+        <div class="content">
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-trips">0</div>
+                    <div class="stat-label">计算次数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-total">¥0</div>
+                    <div class="stat-label">总估算成本</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-distance">0</div>
+                    <div class="stat-label">总距离 (km)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-avg">¥0</div>
+                    <div class="stat-label">平均单次</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="icon">📜</span> 计算历史</div>
+                <div id="history-list">
+                    <div class="empty-state">
+                        <div class="icon">📝</div>
+                        <p>暂无计算记录</p>
+                        <p style="font-size: 13px; margin-top: 8px;">在主页或高级页面进行计算后将显示在这里</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary" onclick="clearHistory()">
+                🗑️ 清空历史
+            </button>
+
+            <div style="height: 20px;"></div>
+        </div>
+    </div>
+
+    <!-- 详情页 (换算工具) -->
+    <div class="page" id="page-details">
+        <div class="navbar">
+            <button class="nav-btn" onclick="showPage('home')">←</button>
+            <div class="nav-title">🔄 单位换算</div>
+        </div>
+        <div class="content">
+            <div class="card">
+                <div class="card-title"><span class="icon">🔄</span> MPG ↔ L/100km</div>
+                <div class="input-group">
+                    <label class="input-label">MPG (英里/加仑)</label>
+                    <input type="number" class="input-field" id="conv-mpg" placeholder="例如: 30" oninput="convertMPG()">
+                </div>
+                <div style="text-align: center; margin: 12px 0; color: var(--text-secondary);">⇅ 自动换算 ⇅</div>
+                <div class="input-group">
+                    <label class="input-label">L/100km (升/百公里)</label>
+                    <input type="number" class="input-field" id="conv-lpk" placeholder="例如: 7.8" oninput="convertLPK()">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="icon">📏</span> 距离换算</div>
+                <div class="input-group">
+                    <label class="input-label">公里 (km)</label>
+                    <input type="number" class="input-field" id="conv-km" placeholder="例如: 100" oninput="convertKM()">
+                </div>
+                <div style="text-align: center; margin: 12px 0; color: var(--text-secondary);">⇅ 自动换算 ⇅</div>
+                <div class="input-group">
+                    <label class="input-label">英里 (miles)</label>
+                    <input type="number" class="input-field" id="conv-miles" placeholder="例如: 62" oninput="convertMiles()">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="icon">💰</span> 货币参考</div>
+                <div class="input-group">
+                    <label class="input-label">人民币 (CNY)</label>
+                    <input type="number" class="input-field" id="conv-cny" placeholder="例如: 100" oninput="convertCurrency()">
+                </div>
+                <div style="text-align: center; margin: 12px 0; color: var(--text-secondary);">⇅ 自动换算 ⇅</div>
+                <div class="input-group">
+                    <label class="input-label">美元 (USD) - 参考汇率 7.2</label>
+                    <input type="number" class="input-field" id="conv-usd" placeholder="例如: 13.9" oninput="convertUSD()">
+                </div>
+            </div>
+
+            <div style="height: 20px;"></div>
+        </div>
+    </div>
+
+    <!-- 设置页 -->
+    <div class="page" id="page-settings">
+        <div class="navbar">
+            <button class="nav-btn" onclick="goBack()">←</button>
+            <div class="nav-title">⚙️ 设置</div>
+        </div>
+        <div class="content">
+            <div class="card">
+                <div class="card-title"><span class="icon">🌍</span> 单位设置</div>
+                <div class="toggle-row">
+                    <div>
+                        <div class="toggle-label">默认使用公制</div>
+                        <div class="toggle-desc">公里、升、元</div>
+                    </div>
+                    <div class="switch on" id="setting-metric" onclick="toggleSetting('metric')"></div>
+                </div>
+                <div class="toggle-row">
+                    <div>
+                        <div class="toggle-label">油耗显示 L/100km</div>
+                        <div class="toggle-desc">关闭则显示 MPG</div>
+                    </div>
+                    <div class="switch on" id="setting-lpk" onclick="toggleSetting('lpk')"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="icon">🚗</span> 默认车辆</div>
+                <div class="input-group">
+                    <label class="input-label">默认油耗</label>
+                    <div class="input-wrapper">
+                        <input type="number" class="input-field" id="default-efficiency" value="7.5" step="0.1">
+                        <span class="input-unit" id="default-eff-unit">L/100km</span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">默认油价</label>
+                    <div class="input-wrapper">
+                        <input type="number" class="input-field" id="default-fuel-price" value="8.0" step="0.01">
+                        <span class="input-unit">¥/L</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="icon">💸</span> 费用默认值</div>
+                <div class="input-group">
+                    <label class="input-label">默认过路费 (元/km)</label>
+                    <input type="number" class="input-field" id="default-toll" value="0.5" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">默认停车费 (元/天)</label>
+                    <input type="number" class="input-field" id="default-parking" value="50" step="1">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">默认餐饮 (元/天)</label>
+                    <input type="number" class="input-field" id="default-food" value="150" step="10">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="icon">🔧</span> 折旧设置</div>
+                <div class="input-group">
+                    <label class="input-label">轿车 元/km</label>
+                    <input type="number" class="input-field" id="rate-sedan" value="0.3" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">SUV 元/km</label>
+                    <input type="number" class="input-field" id="rate-suv" value="0.5" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">皮卡 元/km</label>
+                    <input type="number" class="input-field" id="rate-truck" value="0.7" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">房车 元/km</label>
+                    <input type="number" class="input-field" id="rate-rv" value="1.5" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">拖挂 元/km</label>
+                    <input type="number" class="input-field" id="rate-trailer" value="0.4" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">摩托 元/km</label>
+                    <input type="number" class="input-field" id="rate-motorcycle" value="0.15" step="0.01">
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="saveSettings()">
+                💾 保存设置
+            </button>
+
+            <div style="height: 20px;"></div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <div class="bottom-nav">
+        <button class="nav-item active" onclick="showPage('home')" data-page="home">
+            <span class="nav-item-icon">🏠</span>
+            <span>首页</span>
+        </button>
+        <button class="nav-item" onclick="showPage('advanced')" data-page="advanced">
+            <span class="nav-item-icon">🚀</span>
+            <span>高级</span>
+        </button>
+        <button class="nav-item" onclick="showPage('stats')" data-page="stats">
+            <span class="nav-item-icon">📈</span>
+            <span>统计</span>
+        </button>
+        <button class="nav-item" onclick="showPage('details')" data-page="details">
+            <span class="nav-item-icon">🔄</span>
+            <span>换算</span>
+        </button>
+    </div>
+
+    <script>
+// ==================== 全局状态 ====================
+        let currentUnit = 'metric'; // 'metric' 或 'imperial'
+        let currentVehicle = 'sedan';
+        let history = [];
+        let previousPage = 'home';
+
+        // 折旧率设置
+        const depreciationRates = {
+            sedan: 0.3,
+            suv: 0.5,
+            truck: 0.7,
+            rv: 1.5,
+            trailer: 0.4,
+            motorcycle: 0.15
+        };
+
+        // ==================== 初始化 ====================
+        window.onload = function() {
+            // 2秒后隐藏启动画面
+            setTimeout(() => {
+                document.getElementById('splash').classList.add('hidden');
+            }, 2000);
+
+            // 加载保存的设置
+            loadSettings();
+
+            // 初始化输入
+            syncAdvancedInputs();
+        };
+
+        // ==================== 页面导航 ====================
+        function showPage(page) {
+            // 记录上一页（用于设置页返回）
+            const currentActive = document.querySelector('.page.active');
+            if (currentActive && currentActive.id !== 'page-settings') {
+                previousPage = currentActive.id.replace('page-', '');
+            }
+
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+            // 显示目标页面
+            document.getElementById('page-' + page).classList.add('active');
+
+            // 更新底部导航
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.page === page);
+            });
+
+            // 特殊处理
+            if (page === 'advanced') {
+                syncAdvancedInputs();
+            }
+            if (page === 'stats') {
+                updateStats();
+            }
+        }
+
+        function goBack() {
+            showPage(previousPage);
+        }
+
+        // ==================== 单位切换 ====================
+        function setUnit(unit) {
+            currentUnit = unit;
+
+            // 更新按钮状态
+            document.getElementById('btn-metric').classList.toggle('active', unit === 'metric');
+            document.getElementById('btn-imperial').classList.toggle('active', unit === 'imperial');
+
+            // 更新标签
+            if (unit === 'metric') {
+                document.getElementById('label-fuel-price').textContent = '(元/升)';
+                document.getElementById('label-distance').textContent = '(公里)';
+                document.getElementById('label-efficiency').textContent = '(L/100km)';
+                document.getElementById('unit-fuel-price').textContent = '¥/L';
+                document.getElementById('unit-distance').textContent = 'km';
+                document.getElementById('unit-efficiency').textContent = 'L/100km';
+                document.getElementById('unit-total-cost').textContent = '¥';
+                document.getElementById('hint-efficiency').textContent = '输入 L/100km，或点击切换为 MPG';
+
+                document.getElementById('adv-unit-fuel').textContent = '¥/L';
+                document.getElementById('adv-unit-dist').textContent = 'km';
+                document.getElementById('adv-unit-eff').textContent = 'L/100km';
+            } else {
+                document.getElementById('label-fuel-price').textContent = '($/gal)';
+                document.getElementById('label-distance').textContent = '(miles)';
+                document.getElementById('label-efficiency').textContent = '(MPG)';
+                document.getElementById('unit-fuel-price').textContent = '$/gal';
+                document.getElementById('unit-distance').textContent = 'mi';
+                document.getElementById('unit-efficiency').textContent = 'MPG';
+                document.getElementById('unit-total-cost').textContent = '$';
+                document.getElementById('hint-efficiency').textContent = '输入 MPG，或点击切换为 L/100km';
+
+                document.getElementById('adv-unit-fuel').textContent = '$/gal';
+                document.getElementById('adv-unit-dist').textContent = 'mi';
+                document.getElementById('adv-unit-eff').textContent = 'MPG';
+            }
+        }
+
+        // ==================== 基础计算 ====================
+        function calculateBasic() {
+            const price = parseFloat(document.getElementById('fuel-price').value);
+            const dist = parseFloat(document.getElementById('distance').value);
+            const eff = parseFloat(document.getElementById('efficiency').value);
+            const cost = parseFloat(document.getElementById('total-cost').value);
+
+            const inputs = [price, dist, eff, cost].filter(v => !isNaN(v) && v > 0);
+
+            if (inputs.length !== 3) {
+                alert('请准确输入其中3项，留空1项进行计算！');
+                return;
+            }
+
+            let result, resultLabel, missingField;
+
+            if (isNaN(price) || price <= 0) {
+                // 计算油价
+                if (currentUnit === 'metric') {
+                    result = cost / (dist * eff / 100);
+                    resultLabel = '油价 (¥/L)';
+                } else {
+                    result = cost / (dist / eff);
+                    resultLabel = '油价 ($/gal)';
+                }
+                missingField = 'fuel-price';
+            } else if (isNaN(dist) || dist <= 0) {
+                // 计算距离
+                if (currentUnit === 'metric') {
+                    result = cost / (price * eff / 100);
+                    resultLabel = '距离 (km)';
+                } else {
+                    result = cost / (price / eff);
+                    resultLabel = '距离 (miles)';
+                }
+                missingField = 'distance';
+            } else if (isNaN(eff) || eff <= 0) {
+                // 计算油耗
+                if (currentUnit === 'metric') {
+                    result = cost / (price * dist) * 100;
+                    resultLabel = '油耗 (L/100km)';
+                } else {
+                    result = price * dist / cost;
+                    resultLabel = '油耗 (MPG)';
+                }
+                missingField = 'efficiency';
+            } else {
+                // 计算总成本
+                if (currentUnit === 'metric') {
+                    result = dist * eff / 100 * price;
+                    resultLabel = '总燃油成本 (¥)';
+                } else {
+                    result = dist / eff * price;
+                    resultLabel = '总燃油成本 ($)';
+                }
+                missingField = 'total-cost';
+            }
+
+            result = Math.round(result * 100) / 100;
+
+            // 显示结果
+            document.getElementById('result-value').textContent = result.toFixed(2);
+            document.getElementById('result-label').textContent = resultLabel;
+            document.getElementById('basic-result').style.display = 'block';
+
+            // 填充缺失项
+            if (missingField) {
+                document.getElementById(missingField).value = result.toFixed(2);
+            }
+
+            // 详细数据
+            let fuelUsed, costPerKm, costPerMile;
+            if (currentUnit === 'metric') {
+                const p = parseFloat(document.getElementById('fuel-price').value) || result;
+                const d = parseFloat(document.getElementById('distance').value) || result;
+                const e = parseFloat(document.getElementById('efficiency').value) || result;
+                const c = parseFloat(document.getElementById('total-cost').value) || result;
+
+                fuelUsed = (d * e / 100).toFixed(2);
+                costPerKm = (c / d).toFixed(2);
+                costPerMile = (c / (d * 0.621371)).toFixed(2);
+
+                document.getElementById('result-details').innerHTML = `
+                    <div class="detail-item">
+                        <div class="detail-value">${fuelUsed} L</div>
+                        <div class="detail-label">用油量</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-value">¥${costPerKm}</div>
+                        <div class="detail-label">每公里成本</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-value">¥${costPerMile}</div>
+                        <div class="detail-label">每英里成本</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-value">${(100/e).toFixed(1)} km/L</div>
+                        <div class="detail-label">燃油效率</div>
+                    </div>
+                `;
+            } else {
+                const p = parseFloat(document.getElementById('fuel-price').value) || result;
+                const d = parseFloat(document.getElementById('distance').value) || result;
+                const e = parseFloat(document.getElementById('efficiency').value) || result;
+                const c = parseFloat(document.getElementById('total-cost').value) || result;
+
+                fuelUsed = (d / e).toFixed(2);
+                costPerKm = (c / (d * 1.60934)).toFixed(2);
+                costPerMile = (c / d).toFixed(2);
+
+                document.getElementById('result-details').innerHTML = `
+                    <div class="detail-item">
+                        <div class="detail-value">${fuelUsed} gal</div>
+                        <div class="detail-label">用油量</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-value">$${costPerKm}</div>
+                        <div class="detail-label">每公里成本</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-value">$${costPerMile}</div>
+                        <div class="detail-label">每英里成本</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-value">${e} MPG</div>
+                        <div class="detail-label">燃油效率</div>
+                    </div>
+                `;
+            }
+
+            // 智能分析
+            generateAnalysis(fuelUsed, costPerKm, costPerMile);
+
+            // 添加到历史
+            addToHistory('基础计算', `距离: ${document.getElementById('distance').value}${currentUnit==='metric'?'km':'mi'}`, 
+                parseFloat(document.getElementById('total-cost').value) || result);
+        }
+
+        function generateAnalysis(fuel, cpk, cpm) {
+            let tips = [];
+            const eff = parseFloat(document.getElementById('efficiency').value);
+
+            if (currentUnit === 'metric') {
+                if (eff < 6) tips.push('油耗表现优秀，非常省油！🌟');
+                else if (eff < 9) tips.push('油耗正常，属于经济型范围。👍');
+                else if (eff < 12) tips.push('油耗偏高，建议检查胎压和驾驶习惯。⚠️');
+                else tips.push('油耗很高，考虑车辆保养或更换车型。🔧');
+            } else {
+                if (eff > 35) tips.push('油耗表现优秀，非常省油！🌟');
+                else if (eff > 25) tips.push('油耗正常，属于经济型范围。👍');
+                else if (eff > 18) tips.push('油耗偏高，建议检查胎压和驾驶习惯。⚠️');
+                else tips.push('油耗很高，考虑车辆保养或更换车型。🔧');
+            }
+
+            const dist = parseFloat(document.getElementById('distance').value) || 0;
+            if (dist > 500) tips.push('长途旅行，建议每2小时休息一次。😴');
+            if (dist > 1000) tips.push('超长途！建议规划好加油站和休息点。🗺️');
+
+            const cost = parseFloat(document.getElementById('total-cost').value) || 0;
+            if (cost > 500) tips.push('燃油成本较高，可考虑拼车分摊费用。🤝');
+
+            document.getElementById('analysis-content').innerHTML = tips.map(t => 
+                `<div class="analysis-item"><span>${t}</span></div>`
+            ).join('');
+        }
+
+        function clearBasic() {
+            ['fuel-price', 'distance', 'efficiency', 'total-cost'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            document.getElementById('basic-result').style.display = 'none';
+        }
+
+        // ==================== 高级计算 ====================
+        function selectVehicle(el, type) {
+            document.querySelectorAll('.vehicle-option').forEach(v => v.classList.remove('selected'));
+            el.classList.add('selected');
+            currentVehicle = type;
+
+            // 更新折旧率显示
+            const rate = parseFloat(document.getElementById('rate-' + type).value) || depreciationRates[type];
+            document.getElementById('dep-rate').textContent = rate;
+        }
+
+        function toggleSwitch(id) {
+            const el = document.getElementById(id);
+            el.classList.toggle('on');
+
+            // 显示/隐藏对应输入
+            const inputId = id.replace('toggle-', 'input-');
+            const inputEl = document.getElementById(inputId);
+            if (inputEl) {
+                inputEl.style.display = el.classList.contains('on') ? 'block' : 'none';
+            }
+        }
+
+        function syncAdvancedInputs() {
+            // 从基础页面同步数据
+            const fields = ['fuel-price', 'distance', 'efficiency'];
+            fields.forEach(f => {
+                const val = document.getElementById(f).value;
+                if (val) document.getElementById('adv-' + f.replace('-', '-')).value = val;
+            });
+
+            // 如果没有值，使用默认值
+            if (!document.getElementById('adv-fuel-price').value) {
+                document.getElementById('adv-fuel-price').value = document.getElementById('default-fuel-price').value;
+            }
+            if (!document.getElementById('adv-efficiency').value) {
+                document.getElementById('adv-efficiency').value = document.getElementById('default-efficiency').value;
+            }
+        }
+
+        function calculateAdvanced() {
+            const price = parseFloat(document.getElementById('adv-fuel-price').value);
+            const dist = parseFloat(document.getElementById('adv-distance').value);
+            const eff = parseFloat(document.getElementById('adv-efficiency').value);
+
+            if (!price || !dist || !eff) {
+                alert('请至少输入油价、距离和油耗三项基础信息！');
+                return;
+            }
+
+            // 燃油成本
+            let fuelCost;
+            if (currentUnit === 'metric') {
+                fuelCost = dist * eff / 100 * price;
+            } else {
+                fuelCost = dist / eff * price;
+            }
+
+            let total = fuelCost;
+            let breakdown = [];
+            const currency = currentUnit === 'metric' ? '¥' : '$';
+
+            breakdown.push({ label: '⛽ 燃油费', value: fuelCost });
+
+            // 过路费
+            let toll = 0;
+            if (document.getElementById('toggle-toll').classList.contains('on')) {
+                toll = parseFloat(document.getElementById('toll-cost').value) || 0;
+                if (toll === 0) {
+                    // 自动估算：高速公路约 0.5元/km
+                    toll = dist * (parseFloat(document.getElementById('default-toll').value) || 0.5);
+                }
+                total += toll;
+                breakdown.push({ label: '🛣️ 过路费', value: toll });
+            }
+
+            // 停车费
+            let parking = 0;
+            if (document.getElementById('toggle-parking').classList.contains('on')) {
+                parking = parseFloat(document.getElementById('parking-cost').value) || 0;
+                if (parking === 0) {
+                    parking = parseFloat(document.getElementById('default-parking').value) || 50;
+                }
+                total += parking;
+                breakdown.push({ label: '🅿️ 停车费', value: parking });
+            }
+
+            // 住宿费
+            let hotel = 0;
+            if (document.getElementById('toggle-hotel').classList.contains('on')) {
+                const nights = parseInt(document.getElementById('hotel-nights').value) || 1;
+                const perNight = parseFloat(document.getElementById('hotel-cost').value) || 0;
+                hotel = perNight * nights;
+                if (hotel === 0) {
+                    // 提示用户输入
+                    hotel = nights * 300; // 默认提示值
+                }
+                total += hotel;
+                breakdown.push({ label: `🏨 住宿费 (${nights}晚)`, value: hotel });
+            }
+
+            // 餐饮费
+            let food = 0;
+            if (document.getElementById('toggle-food').classList.contains('on')) {
+                const days = parseInt(document.getElementById('food-days').value) || 1;
+                const perDay = parseFloat(document.getElementById('food-cost').value) || 0;
+                food = perDay * days;
+                if (food === 0) {
+                    food = days * (parseFloat(document.getElementById('default-food').value) || 150);
+                }
+                total += food;
+                breakdown.push({ label: `🍽️ 餐饮费 (${days}天)`, value: food });
+            }
+
+            // 折旧费
+            let depreciation = 0;
+            if (document.getElementById('toggle-depreciation').classList.contains('on')) {
+                const rate = parseFloat(document.getElementById('rate-' + currentVehicle).value) || depreciationRates[currentVehicle];
+                depreciation = dist * rate;
+                total += depreciation;
+                breakdown.push({ label: '🔧 车辆折旧', value: depreciation });
+            }
+
+            // 显示结果
+            document.getElementById('adv-total').textContent = currency + total.toFixed(2);
+            document.getElementById('advanced-result').style.display = 'block';
+
+            // 成本明细
+            document.getElementById('adv-breakdown').innerHTML = breakdown.map(b => `
+                <div class="analysis-item">
+                    <span>${b.label}</span>
+                    <span style="font-weight:600;">${currency}${b.value.toFixed(2)}</span>
+                </div>
+                <div class="analysis-item" style="border:none; padding-top:0;">
+                    <span style="color:var(--text-secondary); font-size:12px;">占比 ${((b.value/total)*100).toFixed(1)}%</span>
+                </div>
+            `).join('');
+
+            // 建议
+            let tips = [];
+            const fuelPercent = (fuelCost / total) * 100;
+            if (fuelPercent > 50) tips.push('燃油费占比过高，考虑选择更省油的路线或车辆。');
+            if (toll > fuelCost) tips.push('过路费超过燃油费，可考虑国道替代高速。');
+            if (hotel > 0 && dist < 200) tips.push('短途旅行不需要住宿，可节省此项费用。');
+            if (depreciation > fuelCost) tips.push('车辆折旧成本很高，建议评估是否值得自驾。');
+            if (tips.length === 0) tips.push('各项费用比例合理，祝您旅途愉快！🎉');
+
+            document.getElementById('adv-tips').innerHTML = tips.map(t => 
+                `<div class="analysis-item"><span>• ${t}</span></div>`
+            ).join('');
+
+            // 添加到历史
+            addToHistory('高级计算', `${currentVehicle} | ${dist}${currentUnit==='metric'?'km':'mi'}`, total);
+        }
+
+        // ==================== 单位换算 ====================
+        function convertMPG() {
+            const mpg = parseFloat(document.getElementById('conv-mpg').value);
+            if (mpg > 0) {
+                const lpk = 235.215 / mpg;
+                document.getElementById('conv-lpk').value = lpk.toFixed(2);
+            }
+        }
+
+        function convertLPK() {
+            const lpk = parseFloat(document.getElementById('conv-lpk').value);
+            if (lpk > 0) {
+                const mpg = 235.215 / lpk;
+                document.getElementById('conv-mpg').value = mpg.toFixed(2);
+            }
+        }
+
+        function convertKM() {
+            const km = parseFloat(document.getElementById('conv-km').value);
+            if (!isNaN(km)) {
+                document.getElementById('conv-miles').value = (km * 0.621371).toFixed(2);
+            }
+        }
+
+        function convertMiles() {
+            const miles = parseFloat(document.getElementById('conv-miles').value);
+            if (!isNaN(miles)) {
+                document.getElementById('conv-km').value = (miles * 1.60934).toFixed(2);
+            }
+        }
+
+        function convertCurrency() {
+            const cny = parseFloat(document.getElementById('conv-cny').value);
+            if (!isNaN(cny)) {
+                document.getElementById('conv-usd').value = (cny / 7.2).toFixed(2);
+            }
+        }
+
+        function convertUSD() {
+            const usd = parseFloat(document.getElementById('conv-usd').value);
+            if (!isNaN(usd)) {
+                document.getElementById('conv-cny').value = (usd * 7.2).toFixed(2);
+            }
+        }
+
+        // ==================== 统计与历史 ====================
+        function addToHistory(title, desc, cost) {
+            const item = {
+                title: title,
+                desc: desc,
+                cost: cost,
+                time: new Date().toLocaleString('zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+            };
+            history.unshift(item);
+            if (history.length > 50) history.pop();
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('stat-trips').textContent = history.length;
+
+            let totalCost = 0;
+            let totalDist = 0;
+            history.forEach(h => {
+                totalCost += h.cost;
+                // 尝试提取距离
+                const match = h.desc.match(/(\d+(?:\.\d+)?)/);
+                if (match) totalDist += parseFloat(match[1]);
+            });
+
+            document.getElementById('stat-total').textContent = '¥' + totalCost.toFixed(0);
+            document.getElementById('stat-distance').textContent = totalDist.toFixed(0);
+            document.getElementById('stat-avg').textContent = '¥' + (history.length > 0 ? (totalCost / history.length).toFixed(0) : 0);
+
+            // 更新历史列表
+            const list = document.getElementById('history-list');
+            if (history.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📝</div>
+                        <p>暂无计算记录</p>
+                        <p style="font-size: 13px; margin-top: 8px;">在主页或高级页面进行计算后将显示在这里</p>
+                    </div>
+                `;
+            } else {
+                list.innerHTML = history.map(h => `
+                    <div class="history-item fade-in">
+                        <div class="history-info">
+                            <h4>${h.title}</h4>
+                            <p>${h.desc} · ${h.time}</p>
+                        </div>
+                        <div class="history-cost">¥${h.cost.toFixed(0)}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function clearHistory() {
+            if (confirm('确定要清空所有历史记录吗？')) {
+                history = [];
+                updateStats();
+            }
+        }
+
+        // ==================== 设置 ====================
+        function toggleSetting(key) {
+            const el = document.getElementById('setting-' + key);
+            el.classList.toggle('on');
+
+            if (key === 'metric') {
+                const isMetric = el.classList.contains('on');
+                setUnit(isMetric ? 'metric' : 'imperial');
+            }
+        }
+
+        function saveSettings() {
+            // 保存到 localStorage
+            const settings = {
+                metric: document.getElementById('setting-metric').classList.contains('on'),
+                lpk: document.getElementById('setting-lpk').classList.contains('on'),
+                defaultEff: document.getElementById('default-efficiency').value,
+                defaultPrice: document.getElementById('default-fuel-price').value,
+                defaultToll: document.getElementById('default-toll').value,
+                defaultParking: document.getElementById('default-parking').value,
+                defaultFood: document.getElementById('default-food').value,
+                rates: {
+                    sedan: document.getElementById('rate-sedan').value,
+                    suv: document.getElementById('rate-suv').value,
+                    truck: document.getElementById('rate-truck').value,
+                    rv: document.getElementById('rate-rv').value,
+                    trailer: document.getElementById('rate-trailer').value,
+                    motorcycle: document.getElementById('rate-motorcycle').value
+                }
+            };
+
+            try {
+                localStorage.setItem('tripCostSettings', JSON.stringify(settings));
+                alert('设置已保存！');
+            } catch(e) {
+                alert('设置已保存（本次会话有效）');
+            }
+        }
+
+        function loadSettings() {
+            try {
+                const saved = localStorage.getItem('tripCostSettings');
+                if (saved) {
+                    const s = JSON.parse(saved);
+
+                    if (!s.metric) {
+                        document.getElementById('setting-metric').classList.remove('on');
+                        setUnit('imperial');
+                    }
+
+                    if (!s.lpk) {
+                        document.getElementById('setting-lpk').classList.remove('on');
+                    }
+
+                    if (s.defaultEff) document.getElementById('default-efficiency').value = s.defaultEff;
+                    if (s.defaultPrice) document.getElementById('default-fuel-price').value = s.defaultPrice;
+                    if (s.defaultToll) document.getElementById('default-toll').value = s.defaultToll;
+                    if (s.defaultParking) document.getElementById('default-parking').value = s.defaultParking;
+                    if (s.defaultFood) document.getElementById('default-food').value = s.defaultFood;
+
+                    if (s.rates) {
+                        Object.keys(s.rates).forEach(k => {
+                            if (s.rates[k]) document.getElementById('rate-' + k).value = s.rates[k];
+                        });
+                    }
+                }
+            } catch(e) {
+                console.log('No saved settings');
+            }
+        }
+
+        // ==================== 触摸优化 ====================
+        document.addEventListener('touchstart', function() {}, {passive: true});
+
+        // 防止双击缩放
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+    </script>
+</body>
+</html>
