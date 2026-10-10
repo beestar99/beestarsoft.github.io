@@ -1,0 +1,202 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>老照片 · 旧时光</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    body {
+      margin: 0;
+      background: #f8f5ee;
+      color: #3d4652;
+      font-family: "Noto Serif SC", "Songti SC",
+                   "SimSun", serif;
+    }
+
+    .album {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 45px 22px 60px;
+    }
+
+    .album-header {
+      text-align: center;
+      padding: 20px 0 32px;
+    }
+
+    .album-header .ornament {
+      color: #b69a65;
+      font-size: 20px;
+      letter-spacing: 8px;
+    }
+
+    .album-header h1 {
+      margin: 20px 0 12px;
+      color: #344c68;
+      font-size: clamp(30px, 5vw, 42px);
+      font-weight: normal;
+      letter-spacing: 4px;
+    }
+
+    .album-header p {
+      color: #827b70;
+      font-size: 16px;
+      line-height: 1.9;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin: 10px 0 30px;
+      color: #536984;
+      text-decoration: none;
+      font-size: 15px;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    .album-section {
+      margin-top: 25px;
+    }
+
+    .album-section h2 {
+      margin: 0 0 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #d9cdb8;
+      color: #596b7c;
+      font-size: 22px;
+      font-weight: normal;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .photo-card {
+      margin: 0;
+      padding: 10px;
+      background: #fffdf8;
+      border: 1px solid #e7dfd1;
+      box-shadow: 0 3px 12px rgba(70, 60, 40, 0.06);
+    }
+
+    .photo-card img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4 / 3;
+      object-fit: contain;
+      background: #eee9df;
+    }
+
+    .photo-card figcaption {
+      padding: 12px 3px 5px;
+      text-align: center;
+      color: #696356;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .empty-note {
+      padding: 40px 20px;
+      border: 1px dashed #cbbda4;
+      color: #8a806e;
+      text-align: center;
+      line-height: 2;
+    }
+
+    .album-footer {
+      margin-top: 55px;
+      padding-top: 20px;
+      border-top: 1px solid #d9cdb8;
+      text-align: center;
+      color: #999184;
+      font-size: 13px;
+      line-height: 2;
+    }
+
+    @media (max-width: 650px) {
+      .photo-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .album {
+        padding: 28px 14px 40px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .photo-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="album">
+
+    <header class="album-header">
+      <div class="ornament">✦　✧　✦</div>
+      <h1>老照片 · 旧时光</h1>
+      <p>
+        翻开旧日的相册，重温走过的岁月。<br>
+        照片会慢慢泛黄，记忆里的温暖却不会褪色。
+      </p>
+    </header>
+
+    <a class="back-link" href="AA.html">← 返回生日祝福</a>
+
+    <!-- 第一组照片：将来可以按需要增加或修改标题 -->
+    <section class="album-section">
+      <h2>那些年的时光</h2>
+
+      <div class="photo-grid">
+
+        <!-- 添加照片时，复制下面的 photo-card 模板，
+             并将文件名和说明改成自己的内容。 -->
+
+        <!--
+        <figure class="photo-card">
+          <img src="photos/photo01.jpg"
+               alt="一家人的老照片"
+               loading="lazy">
+          <figcaption>
+            那一年，我们在一起。
+          </figcaption>
+        </figure>
+        -->
+
+      </div>
+    </section>
+
+    <!-- 没有照片时显示；加入照片后会自动隐藏 -->
+    <script>
+      document.querySelectorAll(".photo-grid").forEach(function(grid) {
+        if (grid.querySelector(".photo-card")) return;
+
+        const note = document.createElement("div");
+        note.className = "empty-note";
+        note.innerHTML =
+          "这里留给那些珍贵的旧时光。<br>" +
+          "等照片慢慢放进来，回忆也会一点点鲜活起来。";
+
+        grid.appendChild(note);
+      });
+    </script>
+
+    <footer class="album-footer">
+      岁月留不住，亲情永相伴。<br>
+      愿每一张老照片，都收藏着一份温暖。
+    </footer>
+
+  </main>
+</body>
+</html>
