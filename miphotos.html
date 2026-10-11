@@ -1,1 +1,403 @@
 
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>老照片 · 旧时光</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    body {
+      margin: 0;
+      background: #f8f5ee;
+      color: #3d4652;
+      font-family: "Noto Serif SC", "Songti SC",
+                   "SimSun", serif;
+    }
+
+    .album {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 45px 22px 60px;
+    }
+
+    .album-header {
+      text-align: center;
+      padding: 20px 0 32px;
+    }
+
+    .album-header .ornament {
+      color: #b69a65;
+      font-size: 20px;
+      letter-spacing: 8px;
+    }
+
+    .album-header h1 {
+      margin: 20px 0 12px;
+      color: #344c68;
+      font-size: clamp(30px, 5vw, 42px);
+      font-weight: normal;
+      letter-spacing: 4px;
+    }
+
+    .album-header p {
+      color: #827b70;
+      font-size: 16px;
+      line-height: 1.9;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin: 10px 0 30px;
+      color: #536984;
+      text-decoration: none;
+      font-size: 15px;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    .album-section {
+      margin-top: 25px;
+    }
+
+    .album-section h2 {
+      margin: 0 0 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #d9cdb8;
+      color: #596b7c;
+      font-size: 22px;
+      font-weight: normal;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .photo-card {
+      margin: 0;
+      padding: 10px;
+      background: #fffdf8;
+      border: 1px solid #e7dfd1;
+      box-shadow: 0 3px 12px rgba(70, 60, 40, 0.06);
+    }
+
+    .photo-card img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4 / 3;
+      object-fit: contain;
+      background: #eee9df;
+    }
+
+    .photo-card figcaption {
+      padding: 12px 3px 5px;
+      text-align: center;
+      color: #696356;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .empty-note {
+      padding: 40px 20px;
+      border: 1px dashed #cbbda4;
+      color: #8a806e;
+      text-align: center;
+      line-height: 2;
+    }
+
+    .album-footer {
+      margin-top: 55px;
+      padding-top: 20px;
+      border-top: 1px solid #d9cdb8;
+      text-align: center;
+      color: #999184;
+      font-size: 13px;
+      line-height: 2;
+    }
+
+    @media (max-width: 650px) {
+      .photo-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .album {
+        padding: 28px 14px 40px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .photo-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+   
+/* 鼠标移到照片上时，提示可以点击 */
+.photo-card img {
+  cursor: zoom-in;
+}
+
+/* 放大照片的黑色背景 */
+.photo-viewer {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.90);
+  align-items: center;
+  justify-content: center;
+  padding: 50px 20px;
+  box-sizing: border-box;
+  cursor: zoom-out;
+}
+
+.photo-viewer.active {
+  display: flex;
+}
+
+.photo-viewer img {
+  display: block;
+  max-width: 95%;
+  max-height: 90vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+}
+
+.photo-viewer .close-viewer {
+  position: absolute;
+  top: 14px;
+  right: 22px;
+  color: white;
+  font-family: Arial, sans-serif;
+  font-size: 36px;
+  line-height: 1;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+  </style>
+</head>
+
+<body>
+  <main class="album">
+
+    <header class="album-header">
+      <div class="ornament">✦　✧　✦</div>
+      <h1>老照片 · 旧时光</h1>
+      <p>
+        翻开旧日的相册，重温走过的岁月。<br>
+        照片会慢慢泛黄，记忆里的温暖却不会褪色。
+      </p>
+    </header>
+
+    <a class="back-link" href="weike.html">← 返回生日祝福</a>
+
+    <!-- 第一组照片：将来可以按需要增加或修改标题 -->
+    <section class="album-section">
+      <h2>那些年的时光</h2>
+
+      <div class="photo-grid">
+
+        <!-- 添加照片时，复制下面的 photo-card 模板，
+             并将文件名和说明改成自己的内容。 -->
+
+        <figure class="photo-card">
+          <img src="miphotos/xingChuSan.jpg"
+               alt="一家人的老照片"
+               loading="lazy">
+          <figcaption>
+            一定很得意，憋不住笑了 😎❤️
+          </figcaption>
+        </figure>
+
+        <figure class="photo-card">
+          <img src="miphotos/mao&weike1.jpg"
+               alt="一家人的老照片"
+               loading="lazy">
+          <figcaption>
+          和教授炒豆仁儿😎
+          </figcaption>
+        </figure>
+
+        <figure class="photo-card">
+          <img src="miphotos/beiXing.jpg"
+               alt="一家人的老照片"
+               loading="lazy">
+          <figcaption>
+            这是哪儿啊😂
+          </figcaption>
+        </figure>
+        <figure class="photo-card">
+          <img src="miphotos/bamabei.jpg"
+               alt="一家人的老照片"
+               loading="lazy">
+          <figcaption>
+            毕业啦
+          </figcaption>
+        </figure>
+        <figure class="photo-card">
+          <img src="miphotos/bei1.jpg"
+               alt="一家人的老照片"
+               loading="lazy">
+          <figcaption>
+            好傲气，这是谁啊🤭
+          </figcaption>
+        </figure>
+        <figure class="photo-card">
+          <img src="miphotos/xing001.jpg"
+               alt="一家人的老照片"
+               loading="lazy">
+          <figcaption>
+            创业呢🤣
+          </figcaption>
+        </figure>
+        <figure class="photo-card">
+          <img src="photos/babirthday.jpg"
+               alt="一家人的老照片"
+               loading="lazy">
+          <figcaption>
+            爷爷的生日宴，不知今昔是何年？
+          </figcaption>
+        </figure>
+        <figure class="photo-card">
+          <img src="photos/maowei2.jpg"
+               alt="一家人的老照片"
+               loading="lazy">
+          <figcaption>
+            像是八十年代的愤青？
+          </figcaption>
+        </figure>
+        <figure class="photo-card">
+          <img src="photos/maobeir.jpg"
+               alt="一家人的老照片"
+               loading="lazy">
+          <figcaption>
+            小麦穗儿穿越了🤭
+          </figcaption>
+        </figure>
+        <figure class="photo-card">
+          <img src="photos/mao2003.jpg"
+               alt="一家人的老照片"
+               loading="lazy">
+          <figcaption>
+            这是大麦穗儿和mi啊🤭
+          </figcaption>
+        </figure>
+        <figure class="photo-card">
+          <img src="miphotos/quajia2.jpg"
+               alt="一家人的老照片"
+               loading="lazy">
+          <figcaption>
+            生日宴🎊
+          </figcaption>
+        </figure>
+        <figure class="photo-card">
+          <img src="photos/quanjia.jpg"
+               alt="一家人的老照片"
+               loading="lazy">
+          <figcaption>
+            几十大寿啊🤭
+          </figcaption>
+        </figure>
+        <!--
+        <figure class="photo-card">
+          <img src="photos/photo01.jpg"
+               alt="一家人的老照片"
+               loading="lazy">
+          <figcaption>
+            那一年，我们在一起。
+          </figcaption>
+        </figure>
+        -->
+
+      </div>
+    </section>
+
+    <!-- 没有照片时显示；加入照片后会自动隐藏 -->
+    <script>
+      document.querySelectorAll(".photo-grid").forEach(function(grid) {
+        if (grid.querySelector(".photo-card")) return;
+
+        const note = document.createElement("div");
+        note.className = "empty-note";
+        note.innerHTML =
+          "这里留给那些珍贵的旧时光。<br>" +
+          "等照片慢慢放进来，回忆也会一点点鲜活起来。";
+
+        grid.appendChild(note);
+      });
+    </script>
+
+    
+<!-- 照片放大查看窗口 -->
+<div class="photo-viewer" id="photoViewer"
+     role="dialog" aria-modal="true"
+     aria-label="放大查看照片">
+
+  <button class="close-viewer" id="closeViewer"
+          aria-label="关闭照片">&times;</button>
+
+  <img id="enlargedPhoto" src="" alt="">
+</div>
+
+<script>
+  const viewer = document.getElementById("photoViewer");
+  const enlargedPhoto = document.getElementById("enlargedPhoto");
+  const closeViewer = document.getElementById("closeViewer");
+
+  // 点击相册中的任意照片，打开大图
+  document.querySelectorAll(".photo-card img").forEach(function(photo) {
+    photo.addEventListener("click", function() {
+      enlargedPhoto.src = photo.src;
+      enlargedPhoto.alt = photo.alt;
+      viewer.classList.add("active");
+      document.body.style.overflow = "hidden";
+      closeViewer.focus();
+    });
+  });
+
+  // 关闭大图
+  function hidePhoto() {
+    viewer.classList.remove("active");
+    enlargedPhoto.src = "";
+    document.body.style.overflow = "";
+  }
+
+  closeViewer.addEventListener("click", hidePhoto);
+
+  // 点击黑色背景关闭，但点击照片本身不关闭
+  viewer.addEventListener("click", function(event) {
+    if (event.target === viewer) {
+      hidePhoto();
+    }
+  });
+
+  // 按 Escape 键关闭
+  document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape" && viewer.classList.contains("active")) {
+      hidePhoto();
+    }
+  });
+</script>
+</body>
+</html>
+
+
+    <footer class="album-footer">
+      岁月留不住，亲情永相伴。<br>
+      愿每一张老照片，都收藏着一份温暖。
+    </footer>
+
+  </main>
+</body>
+</html>
+
