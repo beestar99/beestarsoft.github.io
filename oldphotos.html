@@ -137,6 +137,53 @@
         grid-template-columns: 1fr;
       }
     }
+   
+/* 鼠标移到照片上时，提示可以点击 */
+.photo-card img {
+  cursor: zoom-in;
+}
+
+/* 放大照片的黑色背景 */
+.photo-viewer {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.90);
+  align-items: center;
+  justify-content: center;
+  padding: 50px 20px;
+  box-sizing: border-box;
+  cursor: zoom-out;
+}
+
+.photo-viewer.active {
+  display: flex;
+}
+
+.photo-viewer img {
+  display: block;
+  max-width: 95%;
+  max-height: 90vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+}
+
+.photo-viewer .close-viewer {
+  position: absolute;
+  top: 14px;
+  right: 22px;
+  color: white;
+  font-family: Arial, sans-serif;
+  font-size: 36px;
+  line-height: 1;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
   </style>
 </head>
 
@@ -257,6 +304,61 @@
         grid.appendChild(note);
       });
     </script>
+
+    
+<!-- 照片放大查看窗口 -->
+<div class="photo-viewer" id="photoViewer"
+     role="dialog" aria-modal="true"
+     aria-label="放大查看照片">
+
+  <button class="close-viewer" id="closeViewer"
+          aria-label="关闭照片">&times;</button>
+
+  <img id="enlargedPhoto" src="" alt="">
+</div>
+
+<script>
+  const viewer = document.getElementById("photoViewer");
+  const enlargedPhoto = document.getElementById("enlargedPhoto");
+  const closeViewer = document.getElementById("closeViewer");
+
+  // 点击相册中的任意照片，打开大图
+  document.querySelectorAll(".photo-card img").forEach(function(photo) {
+    photo.addEventListener("click", function() {
+      enlargedPhoto.src = photo.src;
+      enlargedPhoto.alt = photo.alt;
+      viewer.classList.add("active");
+      document.body.style.overflow = "hidden";
+      closeViewer.focus();
+    });
+  });
+
+  // 关闭大图
+  function hidePhoto() {
+    viewer.classList.remove("active");
+    enlargedPhoto.src = "";
+    document.body.style.overflow = "";
+  }
+
+  closeViewer.addEventListener("click", hidePhoto);
+
+  // 点击黑色背景关闭，但点击照片本身不关闭
+  viewer.addEventListener("click", function(event) {
+    if (event.target === viewer) {
+      hidePhoto();
+    }
+  });
+
+  // 按 Escape 键关闭
+  document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape" && viewer.classList.contains("active")) {
+      hidePhoto();
+    }
+  });
+</script>
+</body>
+</html>
+
 
     <footer class="album-footer">
       岁月留不住，亲情永相伴。<br>
