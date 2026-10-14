@@ -116,5 +116,178 @@
     </footer>
 
     <script src="script.js"></script>
+
+    
+<!-- Company Closure Notice Popup -->
+<div id="closure-popup" class="closure-overlay">
+  <div class="closure-modal" role="dialog"
+       aria-modal="true"
+       aria-labelledby="closure-title">
+
+    <button class="closure-close-x"
+            onclick="closeClosurePopup()"
+            aria-label="Close">&times;</button>
+
+    <div class="closure-mark">✦</div>
+
+    <h2 id="closure-title">Company Closure Notice</h2>
+
+    <div class="closure-divider"></div>
+
+    <p>
+      Beestar Software, LLC has concluded its business operations.
+      Only a few final administrative matters remain to be settled.
+    </p>
+
+    <p>
+      This website is no longer maintained for business purposes.
+      Its homepage remains online solely to serve as this notice
+      and as a lasting record of the company’s journey.
+    </p>
+
+    <p class="closure-thanks">
+      Thank you to everyone who has been part of that journey.
+    </p>
+
+    <button class="closure-button"
+            onclick="closeClosurePopup()">Close</button>
+
+  </div>
+</div>
+
+<style>
+.closure-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.68);
+  backdrop-filter: blur(3px);
+}
+
+.closure-modal {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  box-sizing: border-box;
+  padding: 42px 38px 34px;
+  background: #ffffff;
+  color: #333b49;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  font-family: inherit;
+  animation: closureFadeIn 0.35s ease-out;
+}
+
+.closure-mark {
+  color: #5478a8;
+  font-size: 25px;
+  margin-bottom: 12px;
+}
+
+.closure-modal h2 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.4;
+  font-weight: 600;
+  color: #243b5a;
+}
+
+.closure-divider {
+  width: 54px;
+  height: 2px;
+  margin: 22px auto 26px;
+  background: #8da8c8;
+}
+
+.closure-modal p {
+  margin: 0 0 18px;
+  font-size: 15px;
+  line-height: 1.85;
+  text-align: left;
+}
+
+.closure-modal .closure-thanks {
+  margin-top: 24px;
+  margin-bottom: 28px;
+  text-align: center;
+  font-style: italic;
+  color: #526985;
+}
+
+.closure-close-x {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  border: none;
+  background: transparent;
+  color: #7b8491;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.closure-close-x:hover {
+  color: #243b5a;
+}
+
+.closure-button {
+  min-width: 110px;
+  padding: 11px 28px;
+  border: none;
+  border-radius: 5px;
+  background: #34577f;
+  color: #ffffff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.closure-button:hover {
+  background: #243b5a;
+}
+
+@keyframes closureFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .closure-modal {
+    padding: 38px 24px 28px;
+  }
+
+  .closure-modal h2 {
+    font-size: 21px;
+  }
+
+  .closure-modal p {
+    font-size: 14px;
+    line-height: 1.8;
+  }
+}
+</style>
+
+<script>
+function closeClosurePopup() {
+  const popup = document.getElementById('closure-popup');
+  if (popup) {
+    popup.style.display = 'none';
+  }
+}
+</script>
+
+
 </body>
 </html>
