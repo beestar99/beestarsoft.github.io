@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>旅行成本分析器</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+:root{--p:#3b82f6;--g:#10b981;--w:#f59e0b;--bg:#0f172a;--sf:#1e293b;--sl:#334155;--tx:#f1f5f9;--t2:#94a3b8;--bd:#475569}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--tx);position:fixed;inset:0}
+@media(min-width:768px){body{max-width:430px;margin:0 auto;border:0 solid var(--bd);border-width:0 1px}.bnav{max-width:430px;left:50%!important;transform:translateX(-50%)}}
+#splash{position:fixed;inset:0;background:linear-gradient(135deg,#0f172a,#1e3a5f);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;transition:opacity .6s}
+#splash.hide{opacity:0;pointer-events:none}
+#splash .ic{font-size:60px}#splash img{width:96px}#splash h1{font-size:26px;margin:10px 0 4px}#splash p{color:var(--t2);font-size:13px}
+.page{position:absolute;inset:0 0 62px 0;display:none;flex-direction:column;overflow-y:auto;padding-top:env(safe-area-inset-top)}
+.page.on{display:flex}
+.nb{background:var(--sf);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5}
+.nb b{font-size:17px}.nb img{height:22px;vertical-align:middle}
+.ib{background:none;border:0;color:var(--tx);font-size:20px;padding:6px 10px;cursor:pointer}
+.ct{padding:14px}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:16px;padding:16px;margin-bottom:14px}
+.ct h3{font-size:15px;margin-bottom:12px}
+.seg{display:flex;background:var(--bg);border-radius:10px;padding:4px;margin-bottom:12px;gap:4px}
+.seg button{flex:1;padding:10px 4px;border:0;background:none;color:var(--t2);border-radius:8px;font-size:14px;cursor:pointer}
+.seg button.on{background:var(--p);color:#fff}
+.lb{display:block;font-size:13px;color:var(--t2);margin:12px 0 5px}
+.iw{position:relative}
+input,select{width:100%;background:var(--bg);border:1.5px solid var(--bd);border-radius:12px;padding:13px 70px 13px 14px;color:var(--tx);font-size:16px;outline:0}
+select{padding-right:14px}
+input:focus{border-color:var(--p)}input.auto{border-color:var(--g);background:rgba(16,185,129,.1)}
+.un{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--t2);font-size:13px;pointer-events:none}
+.hint{font-size:12px;color:var(--t2);margin-top:4px;line-height:1.5}
+.btn{width:100%;padding:14px;border:0;border-radius:12px;font-size:16px;font-weight:600;color:#fff;background:var(--p);cursor:pointer;margin-top:12px}
+.btn.s{background:var(--sl)}.btn.g{background:var(--g)}
+.btn:active{opacity:.85}
+.tipbox{background:rgba(59,130,246,.12);border-left:4px solid var(--p);padding:10px 14px;border-radius:0 12px 12px 0;margin-bottom:14px;font-size:13px;color:var(--t2);line-height:1.6}
+.tipbox b{color:var(--p)}
+.res{background:linear-gradient(135deg,var(--p),#2563eb);border-radius:14px;padding:18px;text-align:center;margin-top:14px}
+.res .v{font-size:34px;font-weight:700}.res .l{font-size:13px;opacity:.9}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.cell{background:var(--bg);border-radius:12px;padding:12px;text-align:center}
+.cell b{display:block;font-size:17px}.cell span{font-size:12px;color:var(--t2)}
+.box{background:var(--bg);border-radius:12px;padding:12px;margin-top:12px}
+.box h4{font-size:14px;margin-bottom:6px;color:var(--p)}
+.row{display:flex;justify-content:space-between;gap:10px;padding:7px 0;font-size:14px;border-bottom:1px solid rgba(255,255,255,.06)}
+.row:last-child{border:0}.row i{color:var(--t2);font-size:12px;font-style:normal}
+.vg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.vo{background:var(--bg);border:2px solid var(--bd);border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;font-size:12px;color:var(--t2)}
+.vo span{display:block;font-size:26px}.vo.on{border-color:var(--p);background:rgba(59,130,246,.12)}
+.chk{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:14px}.chk input{width:20px;height:20px;padding:0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input[type=range]{padding:0;height:6px}
+.tags{margin-top:6px}.tag{display:inline-block;padding:4px 10px;border:1px solid var(--bd);border-radius:20px;font-size:12px;color:var(--t2);margin:0 6px 4px 0;cursor:pointer}
+.stat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat div{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:14px;text-align:center}
+.stat b{display:block;font-size:22px;color:var(--p)}.stat span{font-size:12px;color:var(--t2)}
+.his{display:flex;justify-content:space-between;align-items:center;background:var(--bg);border-radius:12px;padding:12px;margin-bottom:10px}
+.his p{font-size:12px;color:var(--t2);margin-top:3px}.his b{color:var(--g);font-size:18px}
+.bnav{position:fixed;bottom:0;left:0;right:0;background:var(--sf);border-top:1px solid var(--bd);display:flex;padding:6px 0 calc(6px + env(safe-area-inset-bottom));z-index:50}
+.bnav button{flex:1;background:none;border:0;color:var(--t2);font-size:11px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.bnav button span{font-size:21px}.bnav button.on{color:var(--p)}
+#toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#000c;color:#fff;padding:10px 16px;border-radius:20px;font-size:14px;z-index:900;display:none;max-width:85%;text-align:center}
+a.back{color:var(--t2);font-size:13px;text-decoration:none;display:block;margin-bottom:10px}
+</style>
+</head>
+<body>
+<div id="splash" onclick="this.classList.add('hide')">
+ <div class="ic" id="sp-ic">🚗</div><h1>旅行成本分析器</h1><p>Trip Cost Analyzer</p>
+</div>
+
+<!-- 首页 -->
+<div class="page on" id="page-home">
+ <div class="nb"><b>🚗 自驾游成本计算</b><button class="ib" onclick="go('settings')">⚙️</button></div>
+ <div class="ct">
+  <a class="back" href="https://beestarsoft.com/index.html">← 返回 beestarsoft 首页</a>
+  <div class="card">
+   <h3>📖 怎么用（3步）</h3>
+   <div class="hint" id="howto" style="font-size:13px"></div>
+  </div>
+  <div class="card">
+   <label class="lb" style="margin-top:0">① 你的车是什么类型？</label>
+   <div class="seg" id="seg-e">
+    <button data-v="fuel" onclick="setE('fuel')">⛽ 油车</button>
+    <button data-v="ev" onclick="setE('ev')">🔋 电车</button>
+    <button data-v="hybrid" onclick="setE('hybrid')">🔌 混动车</button>
+   </div>
+   <label class="lb" style="margin-top:0">② 选单位</label>
+   <div class="seg" id="seg-u">
+    <button data-v="metric" onclick="setU('metric')">公制 🇨🇳 公里</button>
+    <button data-v="imperial" onclick="setU('imperial')">英制 🇺🇸 英里</button>
+   </div>
+
+   <!-- 油车 / 电车 -->
+   <div id="panel-basic">
+    <label class="lb" id="l-price"></label>
+    <div class="iw"><input type="number" id="b-price" min="0" step="0.01" inputmode="decimal"><span class="un" id="u-price"></span></div>
+    <div class="tags" id="presets-b"></div>
+    <label class="lb">📏 行驶距离</label>
+    <div class="iw"><input type="number" id="b-dist" min="0" step="0.1" inputmode="decimal" placeholder="例如: 500"><span class="un" id="u-dist"></span></div>
+    <label class="lb" id="l-eff"></label>
+    <div class="iw"><input type="number" id="b-eff" min="0" step="0.1" inputmode="decimal"><span class="un" id="u-eff"></span></div>
+    <div class="hint" id="h-eff"></div>
+    <label class="lb" id="l-cost"></label>
+    <div class="iw"><input type="number" id="b-cost" min="0" step="0.01" inputmode="decimal" placeholder="例如: 300"><span class="un" id="u-cost"></span></div>
+    <button class="btn" onclick="calcBasic()">🔢 计算空缺项</button>
+    <button class="btn s" onclick="clearBasic()">🗑️ 清空输入</button>
+    <div id="basic-res" style="display:none">
+     <div class="res"><div class="v" id="r-v"></div><div class="l" id="r-l"></div></div>
+     <div class="grid" id="r-grid"></div>
+     <div class="box"><h4>📊 智能分析</h4><div id="r-tips"></div></div>
+    </div>
+   </div>
+
+   <!-- 混动车 -->
+   <div id="panel-hybrid" style="display:none">
+    <div class="tipbox" style="margin-top:12px"><b>提示：</b>这里按“插电混动”计算：一部分路程用电，一部分用油。不能插电的普通混动，请选“油车”，填混动后的油耗就行。</div>
+    <div class="two">
+     <div><label class="lb" style="margin-top:0" id="l-fp"></label><div class="iw"><input type="number" id="h-fp" min="0" step="0.01" inputmode="decimal"></div></div>
+     <div><label class="lb" style="margin-top:0" id="l-ep"></label><div class="iw"><input type="number" id="h-ep" min="0" step="0.01" inputmode="decimal"></div></div>
+    </div>
+    <div class="tags" id="presets-h"></div>
+    <label class="lb">📏 总行驶距离</label>
+    <div class="iw"><input type="number" id="h-d" min="0" step="0.1" inputmode="decimal" placeholder="例如: 500"><span class="un" id="u-hd"></span></div>
+    <label class="lb">🔌 有多少路程是用电跑的：<b id="share-v">50%</b></label>
+    <input type="range" id="h-s" min="0" max="100" value="50" oninput="$('share-v').textContent=this.value+'%'">
+    <div class="hint">不知道就先选 50%。短途多用电，长途电用完后就改用油。</div>
+    <div class="two">
+     <div><label class="lb" id="l-fe"></label><div class="iw"><input type="number" id="h-fe" min="0" step="0.1" inputmode="decimal"></div></div>
+     <div><label class="lb" id="l-ee"></label><div class="iw"><input type="number" id="h-ee" min="0" step="0.1" inputmode="decimal"></div></div>
+    </div>
+    <div class="hint">用油油耗：电用完后靠发动机跑时的油耗。用电电耗：纯电跑时的耗电量。</div>
+    <button class="btn" onclick="calcHybrid()">🔢 计算总成本</button>
+    <button class="btn s" onclick="clearHybrid()">🗑️ 清空输入</button>
+    <div id="hyb-res" style="display:none">
+     <div class="res"><div class="v" id="hr-v"></div><div class="l">预计总成本（油+电）</div></div>
+     <div class="grid" id="hr-grid"></div>
+     <div class="box"><h4>📊 智能分析</h4><div id="hr-tips"></div></div>
+    </div>
+   </div>
+  </div>
+  <button class="btn g" onclick="go('adv')">🚀 加上过路费、住宿等，算总花费</button>
+  <div style="height:20px"></div>
+ </div>
+</div>
+
+<!-- 高级页 -->
+<div class="page" id="page-adv">
+ <div class="nb"><button class="ib" onclick="go('home')">←</button><b>🚀 高级计算</b><button class="ib" onclick="go('settings')">⚙️</button></div>
+ <div class="ct">
+  <div class="tipbox"><b>提示：</b>先在首页填好油价/电价、距离和油耗（电耗），再来这里。下面的费用不用的就留空，空着就不算。</div>
+  <div class="card"><h3>🚗 车型（影响折旧）</h3>
+   <div class="vg" id="vg"></div>
+  </div>
+  <div class="card"><h3>💸 额外费用 <span id="cur-tag" style="color:var(--t2);font-weight:400"></span></h3>
+   <label class="lb" style="margin-top:0">🛣️ 过路费（总共）</label><input type="number" id="x-toll" min="0" step="0.01" inputmode="decimal" style="padding-right:14px">
+   <label class="lb">🅿️ 停车费（总共）</label><input type="number" id="x-park" min="0" step="0.01" inputmode="decimal" style="padding-right:14px">
+   <div class="two">
+    <div><label class="lb">🏨 住宿（每晚）</label><input type="number" id="x-hotel" min="0" step="0.01" inputmode="decimal" style="padding-right:14px"></div>
+    <div><label class="lb">住几晚</label><input type="number" id="x-nights" min="0" step="1" value="1" style="padding-right:14px"></div>
+   </div>
+   <div class="two">
+    <div><label class="lb">🍽️ 餐饮（每天）</label><input type="number" id="x-food" min="0" step="0.01" inputmode="decimal" style="padding-right:14px"></div>
+    <div><label class="lb">几天</label><input type="number" id="x-days" min="0" step="1" value="1" style="padding-right:14px"></div>
+   </div>
+   <label class="chk"><input type="checkbox" id="x-dep" checked> 🔧 计入车辆折旧（车越开越不值钱）</label>
+   <div class="hint" id="dep-hint"></div>
+  </div>
+  <button class="btn" onclick="calcAdv()">🧮 计算总成本</button>
+  <div id="adv-res" style="display:none;margin-top:14px">
+   <div class="card">
+    <div class="res" style="margin-top:0"><div class="v" id="a-v"></div><div class="l">预计总成本</div></div>
+    <div class="box"><h4>📋 成本明细</h4><div id="a-list"></div></div>
+    <div class="box"><h4 style="color:var(--g)">💡 建议</h4><div id="a-tips"></div></div>
+   </div>
+  </div>
+  <div style="height:20px"></div>
+ </div>
+</div>
+
+<!-- 统计页 -->
+<div class="page" id="page-stats">
+ <div class="nb"><b>📈 统计分析</b><button class="ib" onclick="go('settings')">⚙️</button></div>
+ <div class="ct">
+  <div class="stat">
+   <div><b id="s-n">0</b><span>计算次数</span></div>
+   <div><b id="s-t">¥0</b><span>总成本（美元按汇率折成人民币）</span></div>
+   <div><b id="s-d">0</b><span>总距离 (km)</span></div>
+   <div><b id="s-a">¥0</b><span>平均每次</span></div>
+  </div>
+  <div class="card"><h3>📜 计算历史</h3><div id="his"></div></div>
+  <button class="btn s" onclick="clearHis()">🗑️ 清空历史</button>
+  <div style="height:20px"></div>
+ </div>
+</div>
+
+<!-- 换算页 -->
+<div class="page" id="page-tools">
+ <div class="nb"><b>🔄 单位换算</b><span></span></div>
+ <div class="ct">
+  <div class="card"><h3>⛽ MPG ↔ L/100km</h3>
+   <label class="lb" style="margin-top:0">MPG（英里/加仑）</label><input id="c-mpg" type="number" inputmode="decimal" style="padding-right:14px" oninput="conv('c-mpg','c-lpk',v=>235.215/v)">
+   <label class="lb">L/100km（升/百公里）</label><input id="c-lpk" type="number" inputmode="decimal" style="padding-right:14px" oninput="conv('c-lpk','c-mpg',v=>235.215/v)"></div>
+  <div class="card"><h3>🔋 kWh/100km ↔ kWh/100mi</h3>
+   <label class="lb" style="margin-top:0">kWh/100km（度/百公里）</label><input id="c-ek" type="number" inputmode="decimal" style="padding-right:14px" oninput="conv('c-ek','c-em',v=>v*1.609344)">
+   <label class="lb">kWh/100mi（度/百英里）</label><input id="c-em" type="number" inputmode="decimal" style="padding-right:14px" oninput="conv('c-em','c-ek',v=>v/1.609344)"></div>
+  <div class="card"><h3>📏 公里 ↔ 英里</h3>
+   <label class="lb" style="margin-top:0">公里 (km)</label><input id="c-km" type="number" inputmode="decimal" style="padding-right:14px" oninput="conv('c-km','c-mi',v=>v/1.609344)">
+   <label class="lb">英里 (mi)</label><input id="c-mi" type="number" inputmode="decimal" style="padding-right:14px" oninput="conv('c-mi','c-km',v=>v*1.609344)"></div>
+  <div class="card"><h3>💰 人民币 ↔ 美元</h3>
+   <label class="lb" style="margin-top:0">人民币 (¥)</label><input id="c-cny" type="number" inputmode="decimal" style="padding-right:14px" oninput="conv('c-cny','c-usd',v=>v/rate())">
+   <label class="lb">美元 ($)　汇率 <span id="c-rate"></span>（可在设置里改）</label><input id="c-usd" type="number" inputmode="decimal" style="padding-right:14px" oninput="conv('c-usd','c-cny',v=>v*rate())"></div>
+  <div style="height:20px"></div>
+ </div>
+</div>
+
+<!-- 设置页 -->
+<div class="page" id="page-settings">
+ <div class="nb"><button class="ib" onclick="go(prev)">←</button><b>⚙️ 设置</b><span></span></div>
+ <div class="ct">
+  <div class="card"><h3>🌍 打开时的默认选项</h3>
+   <label class="lb" style="margin-top:0">默认车型</label>
+   <select id="s-e"><option value="fuel">⛽ 油车</option><option value="ev">🔋 电车</option><option value="hybrid">🔌 混动车</option></select>
+   <label class="lb">默认单位</label>
+   <select id="s-u"><option value="metric">公制（公里、升、元）</option><option value="imperial">英制（英里、加仑、美元）</option></select>
+   <label class="lb">美元汇率（1美元＝多少元）</label>
+   <input id="s-rate" type="number" step="0.01" value="7.2" style="padding-right:14px">
+  </div>
+  <div class="card"><h3>🔧 折旧（每公里多少元）</h3>
+   <div class="hint" style="margin:-6px 0 6px">车开得越多越不值钱，这里是每跑1公里要“算”多少钱。</div>
+   <div id="dep-inputs"></div>
+  </div>
+  <button class="btn" onclick="saveSet()">💾 保存设置</button>
+  <button class="btn s" onclick="resetSet()">↩️ 恢复默认值</button>
+  <div style="height:20px"></div>
+ </div>
+</div>
+
+<div class="bnav">
+ <button class="on" data-p="home" onclick="go('home')"><span>🏠</span>首页</button>
+ <button data-p="adv" onclick="go('adv')"><span>🚀</span>高级</button>
+ <button data-p="stats" onclick="go('stats')"><span>📈</span>统计</button>
+ <button data-p="tools" onclick="go('tools')"><span>🔄</span>换算</button>
+</div>
+<div id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const KM=1.609344, LPK=235.215;
+const VEH={sedan:['🚗','轿车',0.3],suv:['🚙','SUV',0.5],truck:['🚚','皮卡',0.7],rv:['🚐','房车',1.5],trailer:['🛻','拖挂',0.4],motorcycle:['🏍️','摩托',0.15]};
+const EN={fuel:['⛽','油车'],ev:['🔋','电车'],hybrid:['🔌','混动车']};
+let E='fuel', U='metric', veh='sedan', prev='home', auto=null, hist=[];
+let S={e:'fuel',u:'metric',rate:7.2,dep:{}};
+Object.keys(VEH).forEach(k=>S.dep[k]=VEH[k][2]);
+const rate=()=>parseFloat(S.rate)>0?parseFloat(S.rate):7.2;
+const cur=()=>U==='metric'?'¥':'$';
+const money=n=>cur()+n.toFixed(2);
+const toKm=d=>U==='metric'?d:d*KM;
+const dU=()=>U==='metric'?'km':'mi';
+
+function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',2600)}
+
+// 当前模式的单位设置（inv=true 表示“数字越大越省油”，如 MPG）
+function cfg(){
+ const m=U==='metric';
+ if(E==='ev') return {p:m?'¥/kWh':'$/kWh',e:m?'kWh/100km':'kWh/100mi',use:'度(kWh)',inv:false,pn:'电价',en:'电耗',cn:'总电费'};
+ return {p:m?'¥/L':'$/gal',e:m?'L/100km':'MPG',use:m?'升(L)':'加仑(gal)',inv:!m,pn:'油价',en:'油耗',cn:'总燃油成本'};
+}
+const used=(d,e,inv)=>inv?d/e:d*e/100;
+
+// ---------- 页面 ----------
+function go(p){
+ const a=document.querySelector('.page.on');
+ if(a&&a.id!=='page-settings')prev=a.id.replace('page-','');
+ document.querySelectorAll('.page').forEach(x=>x.classList.toggle('on',x.id==='page-'+p));
+ document.querySelectorAll('.bnav button').forEach(b=>b.classList.toggle('on',b.dataset.p===p));
+ if(p==='adv')advUI();
+ if(p==='stats')renderStats();
+ if(p==='tools')$('c-rate').textContent=rate();
+}
+
+// ---------- 选择车型 / 单位 ----------
+function anyFilled(){return ['b-price','b-dist','b-eff','b-cost','h-fp','h-ep','h-d','h-fe','h-ee'].some(i=>$(i).value!=='')}
+function wipe(){['b-price','b-dist','b-eff','b-cost','h-fp','h-ep','h-d','h-fe','h-ee'].forEach(i=>{$(i).value='';$(i).classList.remove('auto')});
+ auto=null;$('basic-res').style.display=$('hyb-res').style.display=$('adv-res').style.display='none'}
+function setE(v){if(v===E)return;const f=anyFilled();E=v;if(f){wipe();toast('车型变了，输入已清空，请重新填写')}ui()}
+function setU(v){if(v===U)return;const f=anyFilled();U=v;if(f){wipe();toast('单位变了，输入已清空，请重新填写')}ui()}
+
+function ui(){
+ const c=cfg(), m=U==='metric';
+ document.querySelectorAll('#seg-e button').forEach(b=>b.classList.toggle('on',b.dataset.v===E));
+ document.querySelectorAll('#seg-u button').forEach(b=>b.classList.toggle('on',b.dataset.v===U));
+ const hy=E==='hybrid';
+ $('panel-basic').style.display=hy?'none':'block';
+ $('panel-hybrid').style.display=hy?'block':'none';
+ $('howto').innerHTML=hy
+  ?'<b>1.</b> 选好“混动车”和单位<br><b>2.</b> 填油价、电价、距离、用电比例、油耗和电耗<br><b>3.</b> 点“计算总成本”，看油钱、电费各是多少'
+  :'<b>1.</b> 选好车型和单位<br><b>2.</b> 下面4项里填任意3项，留空1项<br><b>3.</b> 点“计算空缺项”，空的那项就算出来了';
+ // 油车/电车
+ const ic=EN[E][0];
+ $('l-price').textContent=ic+' '+c.pn+'（'+c.p+'）';
+ $('u-price').textContent=c.p;
+ $('b-price').placeholder='例如: '+(E==='ev'?(m?'0.6':'0.16'):(m?'8.5':'3.50'));
+ $('l-eff').textContent=(E==='ev'?'🚙 ':'🚙 ')+c.en+'（'+c.e+'）';
+ $('u-eff').textContent=c.e;
+ $('b-eff').placeholder='例如: '+(E==='ev'?(m?'15':'25'):(m?'7.5':'30'));
+ $('h-eff').textContent=E==='ev'?'电车一般 12~20 度/百公里，数字越小越省电':(m?'一般轿车 6~9 升/百公里，数字越小越省油':'一般轿车 25~35 MPG，数字越大越省油');
+ $('l-cost').textContent='💰 '+c.cn;
+ $('u-cost').textContent=cur();$('u-dist').textContent=dU();$('u-hd').textContent=dU();
+ // 混动
+ $('l-fp').textContent='⛽ 油价（'+(m?'¥/L':'$/gal')+'）';
+ $('l-ep').textContent='🔋 电价（'+cur()+'/kWh）';
+ $('l-fe').textContent='用油油耗（'+(m?'L/100km':'MPG')+'）';
+ $('l-ee').textContent='用电电耗（'+(m?'kWh/100km':'kWh/100mi')+'）';
+ $('h-fp').placeholder=m?'8.5':'3.50';$('h-ep').placeholder=m?'0.6':'0.16';
+ $('h-fe').placeholder=m?'6.5':'35';$('h-ee').placeholder=m?'15':'25';
+ // 电价参考标签
+ const pr=m?[['家用慢充',0.6],['公共慢充',1.0],['快充',1.6]]:[['家用',0.16],['公共慢充',0.30],['快充',0.45]];
+ const tg=t=>pr.map(x=>`<span class="tag" onclick="$('${t}').value=${x[1]}">${x[0]} ${x[1]}</span>`).join('')+'<div class="hint">点一下自动填入，仅为常见参考，请以当地为准</div>';
+ $('presets-b').innerHTML=E==='ev'?tg('b-price'):'';
+ $('presets-h').innerHTML=hy?tg('h-ep'):'';
+}
+
+// ---------- 油车/电车：4选3 ----------
+const BID=['b-price','b-dist','b-eff','b-cost'];
+BID.forEach((id,i)=>$(id).addEventListener('input',()=>{if(auto===i){auto=null;$(id).classList.remove('auto')}}));
+
+function calcBasic(){
+ const c=cfg();let v=BID.map(i=>parseFloat($(i).value));
+ if(v.some(x=>x<0))return toast('数字不能是负数哦');
+ const ok=x=>x>0;
+ if(v.filter(ok).length===4&&auto!==null)v[auto]=NaN; // 上次算出来的值，当作空白重算
+ const miss=v.map((x,i)=>ok(x)?-1:i).filter(i=>i>=0);
+ if(miss.length!==1)return toast(miss.length===0?'4项都填满了，请清空其中1项再算':'请填3项，现在只填了'+(4-miss.length)+'项');
+ const m=miss[0];let [p,d,e,t]=v;
+ if(m===0)p=t/used(d,e,c.inv);
+ else if(m===1){const a=t/p;d=c.inv?a*e:a*100/e}
+ else if(m===2){const a=t/p;e=c.inv?d/a:a*100/d}
+ else t=used(d,e,c.inv)*p;
+ const r=[p,d,e,t];
+ BID.forEach((id,i)=>{$(id).classList.remove('auto');if(i===m){$(id).value=r[i].toFixed(2);$(id).classList.add('auto')}});
+ auto=m;
+ const names=[c.pn+'（'+c.p+'）','距离（'+dU()+'）',c.en+'（'+c.e+'）',c.cn+'（'+cur()+'）'];
+ $('r-v').textContent=r[m].toFixed(2);$('r-l').textContent='算出来的：'+names[m];
+ const km=toKm(d),amt=used(d,e,c.inv);
+ const effTxt=c.inv?e.toFixed(1)+' MPG':(100/e).toFixed(1)+(U==='metric'?' km/':' mi/')+(E==='ev'?'kWh':'L');
+ $('r-grid').innerHTML=[[amt.toFixed(2)+' '+c.use.replace(/\(.*/,''),'用量'],[cur()+(t/km).toFixed(2),'每公里成本'],[cur()+(t/(km/KM)).toFixed(2),'每英里成本'],[effTxt,'能效']]
+  .map(x=>`<div class="cell"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');
+ // 分析：统一换成“每百公里”来比较
+ const e100=c.inv?LPK/e:(E==='ev'&&U==='imperial'?e/KM:e);
+ const tips=[];
+ const lv=E==='ev'?[13,17,22]:[6,9,12];
+ tips.push(e100<lv[0]?'能耗表现优秀，非常省！🌟':e100<lv[1]?'能耗正常，属于经济型。👍':e100<lv[2]?'能耗偏高，检查一下胎压和驾驶习惯。⚠️':'能耗很高，可以考虑保养或换车型。🔧');
+ if(E==='ev'){const pp=U==='metric'?p:p*rate();if(pp>1.2)tips.push('电价较高，像是快充价。家用慢充会便宜很多。🔌');
+  tips.push('冬天开暖气和高速行驶会让电耗变高，长途要留足电量。❄️')}
+ if(km>500)tips.push('长途旅行，建议每2小时休息一次。😴');
+ if(km>1000)tips.push(E==='ev'?'超长途！提前规划好充电站。🗺️':'超长途！提前规划好加油站和休息点。🗺️');
+ if(t*(U==='metric'?1:rate())>500)tips.push('这趟'+(E==='ev'?'电费':'油钱')+'不少，可以拼车分摊。🤝');
+ $('r-tips').innerHTML=tips.map(x=>`<div class="row">${x}</div>`).join('');
+ $('basic-res').style.display='block';
+ addHis(E,'基础计算',dU()==='km'?d+' km':d+' mi',t,km);
+}
+function clearBasic(){wipe()}
+
+// ---------- 混动 ----------
+function hybridData(){
+ const fp=parseFloat($('h-fp').value),ep=parseFloat($('h-ep').value),d=parseFloat($('h-d').value),
+  fe=parseFloat($('h-fe').value),ee=parseFloat($('h-ee').value),s=parseFloat($('h-s').value)/100;
+ if(!(fp>0&&ep>0&&d>0&&fe>0&&ee>0))return null;
+ const inv=U==='imperial';
+ const ed=d*s,fd=d-ed;
+ const fu=used(fd,fe,inv),eu=ed*ee/100;
+ return {fp,ep,d,fe,ee,s,fu,eu,fc:fu*fp,ec:eu*ep,allFuel:used(d,fe,inv)*fp};
+}
+function calcHybrid(){
+ const h=hybridData();
+ if(!h)return toast('请把油价、电价、距离、油耗、电耗都填上（要大于0）');
+ const m=U==='metric',total=h.fc+h.ec,km=toKm(h.d);
+ $('hr-v').textContent=money(total);
+ $('hr-grid').innerHTML=[[money(h.fc),'油费'],[money(h.ec),'电费'],[h.fu.toFixed(1)+(m?' L':' gal'),'用油量'],[h.eu.toFixed(1)+' kWh','用电量'],
+  [cur()+(total/km).toFixed(2),'每公里成本'],[cur()+(total/(km/KM)).toFixed(2),'每英里成本']]
+  .map(x=>`<div class="cell"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');
+ const save=h.allFuel-total,tips=[];
+ tips.push(save>0?'比起一直用油，多用电帮你省了 '+money(save)+'。💰':'这样算下来用电并不比用油省，看看电价是不是太高。⚠️');
+ if(h.s<0.3&&h.d<300)tips.push('用电比例有点低，短途尽量充满电再出发会更省钱。🔌');
+ if(h.s>=0.8)tips.push('大部分路程用电，成本很低。注意长途时电会不够用。🌟');
+ if(km>500)tips.push('长途旅行，建议每2小时休息一次。😴');
+ $('hr-tips').innerHTML=tips.map(x=>`<div class="row">${x}</div>`).join('');
+ $('hyb-res').style.display='block';
+ addHis('hybrid','基础计算',h.d+' '+dU(),total,km);
+}
+function clearHybrid(){wipe()}
+
+// ---------- 高级计算 ----------
+function advUI(){
+ $('cur-tag').textContent='（单位：'+(U==='metric'?'人民币 ¥':'美元 $')+'）';
+ $('vg').innerHTML=Object.keys(VEH).map(k=>`<div class="vo ${k===veh?'on':''}" onclick="pickVeh('${k}')"><span>${VEH[k][0]}</span>${VEH[k][1]}</div>`).join('');
+ depHint();
+}
+function pickVeh(k){veh=k;advUI()}
+function depRate(){const r=parseFloat(S.dep[veh]);return (r>=0?r:VEH[veh][2])*(U==='metric'?1:1/rate())} // 每公里(换成当前货币)
+function depHint(){$('dep-hint').textContent='折旧按每'+(U==='metric'?'公里 ¥':'公里 $')+depRate().toFixed(2)+' 计算（可在设置里改）'}
+
+function baseCost(){
+ if(E==='hybrid'){const h=hybridData();if(!h)return null;return {km:toKm(h.d),parts:[['⛽ 油费',h.fc],['🔋 电费',h.ec]]}}
+ const c=cfg(),p=parseFloat($('b-price').value),d=parseFloat($('b-dist').value),e=parseFloat($('b-eff').value);
+ if(!(p>0&&d>0&&e>0))return null;
+ return {km:toKm(d),parts:[[E==='ev'?'🔋 电费':'⛽ 燃油费',used(d,e,c.inv)*p]]};
+}
+function calcAdv(){
+ const b=baseCost();
+ if(!b)return toast('请先回首页，把价格、距离、'+(E==='ev'?'电耗':'油耗')+'填好');
+ const n=id=>Math.max(0,parseFloat($(id).value)||0);
+ const parts=[...b.parts],base=parts.reduce((s,x)=>s+x[1],0);
+ const toll=n('x-toll'),park=n('x-park'),nights=Math.round(n('x-nights')),days=Math.round(n('x-days'));
+ const hotel=n('x-hotel')*nights,food=n('x-food')*days;
+ const dep=$('x-dep').checked?b.km*depRate():0;
+ if(toll)parts.push(['🛣️ 过路费',toll]);
+ if(park)parts.push(['🅿️ 停车费',park]);
+ if(hotel)parts.push(['🏨 住宿费（'+nights+'晚）',hotel]);
+ if(food)parts.push(['🍽️ 餐饮费（'+days+'天）',food]);
+ if(dep)parts.push(['🔧 车辆折旧',dep]);
+ const total=parts.reduce((s,x)=>s+x[1],0);
+ $('a-v').textContent=money(total);
+ $('a-list').innerHTML=parts.map(x=>`<div class="row"><span>${x[0]}<br><i>占比 ${(x[1]/total*100).toFixed(1)}%</i></span><b>${money(x[1])}</b></div>`).join('');
+ const t=[];
+ if(base/total>0.5)t.push(E==='ev'?'电费占比大，可以多用家里的慢充。':E==='hybrid'?'能源费占比大，尽量多用电跑短途。':'燃油费占比大，可以选更省油的路线或车。');
+ if(toll>base)t.push('过路费比能源费还多，可考虑走国道代替高速。');
+ if(hotel&&b.km<200)t.push('短途旅行可能不用住宿，能省下这笔钱。');
+ if(dep>base)t.push('折旧成本很高，想想是否值得自驾。');
+ if(!t.length)t.push('各项费用比例合理，祝旅途愉快！🎉');
+ $('a-tips').innerHTML=t.map(x=>`<div class="row">• ${x}</div>`).join('');
+ $('adv-res').style.display='block';
+ addHis(E,'高级计算',VEH[veh][1]+' | '+(U==='metric'?b.km.toFixed(0)+' km':(b.km/KM).toFixed(0)+' mi'),total,b.km);
+}
+
+// ---------- 换算 ----------
+function conv(from,to,fn){const v=parseFloat($(from).value);$(to).value=v>0?fn(v).toFixed(2):''}
+
+// ---------- 历史与统计 ----------
+function addHis(e,title,desc,cost,km){
+ hist.unshift({e,title,desc,cny:cost*(U==='metric'?1:rate()),km,time:new Date().toLocaleString('zh-CN',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})});
+ if(hist.length>50)hist.pop();
+ try{localStorage.setItem('tcHist',JSON.stringify(hist))}catch(x){}
+}
+function renderStats(){
+ const T=hist.reduce((s,h)=>s+h.cny,0),D=hist.reduce((s,h)=>s+h.km,0);
+ $('s-n').textContent=hist.length;$('s-t').textContent='¥'+T.toFixed(0);
+ $('s-d').textContent=D.toFixed(0);$('s-a').textContent='¥'+(hist.length?(T/hist.length).toFixed(0):0);
+ $('his').innerHTML=hist.length?hist.map(h=>`<div class="his"><div>${EN[h.e][0]} ${h.title}<p>${h.desc} · ${h.time}</p></div><b>¥${h.cny.toFixed(0)}</b></div>`).join('')
+  :'<div class="hint" style="text-align:center;padding:30px 0">暂无记录，去首页算一次吧 📝</div>';
+}
+function clearHis(){if(confirm('确定清空所有历史记录吗？')){hist=[];try{localStorage.removeItem('tcHist')}catch(x){}renderStats()}}
+
+// ---------- 设置 ----------
+function depInputs(){$('dep-inputs').innerHTML=Object.keys(VEH).map(k=>`<label class="lb">${VEH[k][0]} ${VEH[k][1]}（元/公里）</label><input type="number" min="0" step="0.01" id="d-${k}" value="${S.dep[k]}" style="padding-right:14px">`).join('')}
+function fillSet(){$('s-e').value=S.e;$('s-u').value=S.u;$('s-rate').value=S.rate;depInputs()}
+function saveSet(){
+ S.e=$('s-e').value;S.u=$('s-u').value;S.rate=parseFloat($('s-rate').value)>0?parseFloat($('s-rate').value):7.2;
+ Object.keys(VEH).forEach(k=>{const v=parseFloat($('d-'+k).value);S.dep[k]=v>=0?v:VEH[k][2]});
+ try{localStorage.setItem('tcSet',JSON.stringify(S))}catch(x){}
+ fillSet();toast('设置已保存！');
+}
+function resetSet(){S={e:'fuel',u:'metric',rate:7.2,dep:{}};Object.keys(VEH).forEach(k=>S.dep[k]=VEH[k][2]);fillSet();saveSet()}
+
+// ---------- 启动 ----------
+(function(){
+ try{const s=JSON.parse(localStorage.getItem('tcSet')||'null');if(s){S.e=s.e||'fuel';S.u=s.u||'metric';S.rate=s.rate||7.2;Object.assign(S.dep,s.dep||{})}}catch(x){}
+ try{hist=JSON.parse(localStorage.getItem('tcHist')||'[]')||[]}catch(x){hist=[]}
+ E=S.e;U=S.u;fillSet();ui();
+ // 如果有logo图片就显示，没有就用表情
+ const im=new Image();im.onload=()=>{$('sp-ic').innerHTML='';$('sp-ic').appendChild(im)};im.src='tripcost-256T.png';
+ setTimeout(()=>$('splash').classList.add('hide'),1500);
+})();
+</script>
+</body>
+</html>
